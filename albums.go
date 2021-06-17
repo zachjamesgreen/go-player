@@ -35,3 +35,41 @@ func getAlbums(db *sql.DB) []Album {
 	}
 	return albums
 }
+
+func getAlbum(db *sql.DB, id int) Album {
+	var album Album
+	sqlStatment := `SELECT * FROM albums WHERE id = $1`
+	row := db.QueryRow(sqlStatment, id)
+	err := row.Scan(&album.Id, &album.Title, &album.ArtistId)
+	if err != nil {
+		if err == sql.ErrNoRows {
+			fmt.Println("Zero rows")
+		} else {
+			panic(err)
+		}
+	}
+	return album
+}
+
+func getAlbumSongs(db *sql.DB, id int) []Song {
+	var songs []Song
+	var song Song
+	sqlStatment := `SELECT * FROM songs WHERE album_id = $1`
+	rows, err := db.Query(sqlStatment, id)
+	if err != nil {
+		if err == sql.ErrNoRows {
+			fmt.Println("Zero Rows")
+		} else {
+			panic(err)
+		}
+	}
+	defer rows.Close()
+	for rows.Next() {
+		err := rows.Scan(&song.Id, &song.Title, &song.Track, &song.Comment, &song.AlbumId, &song.ArtistId, &song.Genre)
+		if err != nil {
+			log.Fatal(err)
+		}
+		songs = append(songs, song)
+	}
+	return songs
+}

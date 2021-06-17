@@ -20,34 +20,74 @@ func check(err error) {
 }
 
 func mount(r *mux.Router, db *sql.DB) {
+	// --------------
+	// Artists Routes
+	// --------------
 	r.HandleFunc("/artists", func(w http.ResponseWriter, res *http.Request) {
-		artists := getArtists(db)
+		var artists []Artist = getArtists(db)
 		w.Header().Set("Content-Type", "application/json")
 		json.NewEncoder(w).Encode(artists)
 	})
+	r.HandleFunc("/artists/{id}", func(w http.ResponseWriter, res *http.Request) {
+		vars := mux.Vars(res)
+		id, err := strconv.Atoi(vars["id"])
+		check(err)
+		var artist Artist = getArtist(db, id)
+		w.Header().Set("Content-Type", "application/json")
+		json.NewEncoder(w).Encode(artist)
+	})
 	r.HandleFunc("/artists/{id}/songs", func(w http.ResponseWriter, res *http.Request) {
 		vars := mux.Vars(res)
-		i, err := strconv.Atoi(vars["id"])
+		id, err := strconv.Atoi(vars["id"])
 		check(err)
-		songs := getArtistSongs(db, i)
+		songs := getArtistSongs(db, id)
 		w.Header().Set("Content-Type", "application/json")
 		json.NewEncoder(w).Encode(songs)
 	})
+	r.HandleFunc("/artists/{id}/albums", func(w http.ResponseWriter, res *http.Request) {
+		vars := mux.Vars(res)
+		id, err := strconv.Atoi(vars["id"])
+		check(err)
+		songs := getArtistAlbums(db, id)
+		w.Header().Set("Content-Type", "application/json")
+		json.NewEncoder(w).Encode(songs)
+	})
+	// ------------
+	// Album Routes
+	// ------------
 	r.HandleFunc("/albums", func(w http.ResponseWriter, res *http.Request) {
 		albums := getAlbums(db)
 		w.Header().Set("Content-Type", "application/json")
 		json.NewEncoder(w).Encode(albums)
 	})
+	r.HandleFunc("/albums/{id}", func(w http.ResponseWriter, res *http.Request) {
+		vars := mux.Vars(res)
+		id, err := strconv.Atoi(vars["id"])
+		check(err)
+		album := getAlbum(db, id)
+		w.Header().Set("Content-Type", "application/json")
+		json.NewEncoder(w).Encode(album)
+	})
+	r.HandleFunc("/albums/{id}/songs", func(w http.ResponseWriter, res *http.Request) {
+		vars := mux.Vars(res)
+		id, err := strconv.Atoi(vars["id"])
+		check(err)
+		songs := getAlbumSongs(db, id)
+		w.Header().Set("Content-Type", "application/json")
+		json.NewEncoder(w).Encode(songs)
+	})
+	// -----------
+	// Song Routes
+	// -----------
 	r.HandleFunc("/songs", func(w http.ResponseWriter, res *http.Request) {
 		songs := getSongs(db)
 		w.Header().Set("Content-Type", "application/json")
 		json.NewEncoder(w).Encode(songs)
 	})
-	r.HandleFunc("/songs", func(w http.ResponseWriter, res *http.Request) {
-		songs := getSongs(db)
-		w.Header().Set("Content-Type", "application/json")
-		json.NewEncoder(w).Encode(songs)
-	})
+
+	// ------------
+	// Upload Route
+	// ------------
 	r.HandleFunc("/upload", func(w http.ResponseWriter, res *http.Request) {
 		res.ParseMultipartForm(10 << 20)
 		file, handler, err := res.FormFile("song")
