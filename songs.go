@@ -9,14 +9,19 @@ import (
 type Song struct {
 	Id       int    `json:"id"`
 	Title    string `json:"title"`
-	Track    int `json:"track"`
+	Track    int    `json:"track"`
 	Comment  string `json:"comment"`
 	ArtistId int    `json:"artist_id"`
 	AlbumId  int    `json:"album_id"`
-	Genre    string `json:"genre"`
+	Path     string `json:"path"`
+	Genre    Genre  `json:"genre"`
 }
 
-func getSongs(db *sql.DB) []Song {
+type Genre struct {
+	Name string `json:"name"`
+}
+
+func getSongs() []Song {
 	var song Song
 	var songs []Song
 	sqlStatment := `SELECT * FROM songs`

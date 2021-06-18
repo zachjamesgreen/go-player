@@ -9,14 +9,23 @@ import (
 	_ "github.com/lib/pq"
 )
 
+var db *sql.DB
+
+func check(err error) {
+	if err != nil {
+		log.Fatal(err)
+	}
+}
+
 func main() {
-	db, e := sql.Open("postgres", "user=zach dbname=musicplayer")
+	var err error
+	db, err = sql.Open("postgres", "user=zach dbname=musicplayer")
 	defer db.Close()
-	if e != nil {
-		panic(e)
+	if err != nil {
+		panic(err)
 	}
 	r := mux.NewRouter()
-	mount(r, db)
+	mount(r)
 
 	http.Handle("/", r)
 	log.Fatal(http.ListenAndServe(":8081", nil))

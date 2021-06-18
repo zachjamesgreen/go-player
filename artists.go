@@ -11,7 +11,7 @@ type Artist struct {
 	Name string `json:"name"`
 }
 
-func getArtists(db *sql.DB) []Artist {
+func getArtists() []Artist {
 	var artist Artist
 	var artists []Artist
 	sqlStatment := `SELECT * FROM artists`
@@ -35,7 +35,7 @@ func getArtists(db *sql.DB) []Artist {
 	return artists
 }
 
-func getArtist(db *sql.DB, id int) Artist {
+func getArtist(id int) Artist {
 	var artist Artist
 	sqlStatment := `SELECT * FROM artists WHERE id = $1`
 	row := db.QueryRow(sqlStatment, id)
@@ -50,7 +50,7 @@ func getArtist(db *sql.DB, id int) Artist {
 	return artist
 }
 
-func getArtistSongs(db *sql.DB, artist_id int) []Song {
+func getArtistSongs(artist_id int) []Song {
 	var song Song
 	var songs []Song
 	sqlStatment := `SELECT * FROM songs WHERE artist_id = $1`
@@ -74,7 +74,7 @@ func getArtistSongs(db *sql.DB, artist_id int) []Song {
 	return songs
 }
 
-func getArtistAlbums(db *sql.DB, artist_id int) []Album {
+func getArtistAlbums(artist_id int) []Album {
 	var album Album
 	var albums []Album
 	sqlStatment := `SELECT * FROM albums WHERE artist_id = $1`

@@ -12,7 +12,7 @@ type Album struct {
 	ArtistId int    `json:"artist_id"`
 }
 
-func getAlbums(db *sql.DB) []Album {
+func getAlbums() []Album {
 	var album Album
 	var albums []Album
 	sqlStatment := `SELECT * FROM albums`
@@ -36,7 +36,7 @@ func getAlbums(db *sql.DB) []Album {
 	return albums
 }
 
-func getAlbum(db *sql.DB, id int) Album {
+func getAlbum(id int) Album {
 	var album Album
 	sqlStatment := `SELECT * FROM albums WHERE id = $1`
 	row := db.QueryRow(sqlStatment, id)
@@ -51,7 +51,7 @@ func getAlbum(db *sql.DB, id int) Album {
 	return album
 }
 
-func getAlbumSongs(db *sql.DB, id int) []Song {
+func getAlbumSongs(id int) []Song {
 	var songs []Song
 	var song Song
 	sqlStatment := `SELECT * FROM songs WHERE album_id = $1`
@@ -65,7 +65,7 @@ func getAlbumSongs(db *sql.DB, id int) []Song {
 	}
 	defer rows.Close()
 	for rows.Next() {
-		err := rows.Scan(&song.Id, &song.Title, &song.Track, &song.Comment, &song.AlbumId, &song.ArtistId, &song.Genre)
+		err := rows.Scan(&song.Id, &song.Title, &song.Track, &song.Comment, &song.AlbumId, &song.ArtistId, &song.Genre.Name, &song.Path)
 		if err != nil {
 			log.Fatal(err)
 		}
