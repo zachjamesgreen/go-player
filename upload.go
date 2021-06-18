@@ -10,8 +10,6 @@ import (
 )
 
 func upload(file multipart.File, handler *multipart.FileHeader) {
-	fmt.Println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>")
-	fmt.Println(db)
 
 	// Get tags
 	artist, album, song, genreName := getTagData(file)
@@ -25,7 +23,7 @@ func upload(file multipart.File, handler *multipart.FileHeader) {
 		fmt.Println(err)
 	}
 
-	path := fmt.Sprintf("temp/%s/%s", artist.Name, album.Title)
+	path := fmt.Sprintf("files/%s/%s", artist.Name, album.Title)
 	err = os.MkdirAll(path, 0755)
 	if err != nil {
 		fmt.Println(err)

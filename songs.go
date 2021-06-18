@@ -35,7 +35,7 @@ func getSongs() []Song {
 	}
 	defer rows.Close()
 	for rows.Next() {
-		err := rows.Scan(&song.Id, &song.Title, &song.Track, &song.Comment, &song.AlbumId, &song.ArtistId, &song.Genre)
+		err := rows.Scan(&song.Id, &song.Title, &song.Track, &song.Comment, &song.AlbumId, &song.ArtistId, &song.Genre.Name, &song.Path)
 		if err != nil {
 			log.Fatal(err)
 		}
