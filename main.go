@@ -19,7 +19,7 @@ func check(err error) {
 
 func main() {
 	var err error
-	db, err = sql.Open("postgres", "user=zach dbname=musicplayer")
+	db, err = sql.Open("postgres", "host=127.0.0.1 user=zach dbname=musicplayer")
 	defer db.Close()
 	if err != nil {
 		panic(err)
