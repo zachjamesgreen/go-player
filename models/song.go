@@ -1,9 +1,10 @@
-package main
+package models
 
 import (
 	"database/sql"
 	"fmt"
 	"log"
+	db "music/database"
 )
 
 type Song struct {
@@ -21,11 +22,19 @@ type Genre struct {
 	Name string `json:"name"`
 }
 
-func getSongs() []Song {
+func (s Song) String() string {
+	return fmt.Sprintf("Song<%+v %+v %+v %+v %+v %+v %+v %+v>", s.Id, s.Title, s.Track, s.Comment, s.AlbumId, s.ArtistId, s.Path, s.Genre)
+}
+
+func (g Genre) String() string {
+	return fmt.Sprintf("Genre<%+v>", g.Name)
+}
+
+func GetSongs() []Song {
 	var song Song
 	var songs []Song
 	sqlStatment := `SELECT * FROM songs`
-	rows, err := db.Query(sqlStatment)
+	rows, err := db.DB.Query(sqlStatment)
 	if err != nil {
 		if err == sql.ErrNoRows {
 			fmt.Println("Zero rows")

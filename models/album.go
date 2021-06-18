@@ -1,9 +1,10 @@
-package main
+package models
 
 import (
 	"database/sql"
 	"fmt"
 	"log"
+	db "music/database"
 )
 
 type Album struct {
@@ -12,11 +13,11 @@ type Album struct {
 	ArtistId int    `json:"artist_id"`
 }
 
-func getAlbums() []Album {
+func GetAlbums() []Album {
 	var album Album
 	var albums []Album
 	sqlStatment := `SELECT * FROM albums`
-	rows, err := db.Query(sqlStatment)
+	rows, err := db.DB.Query(sqlStatment)
 	if err != nil {
 		if err == sql.ErrNoRows {
 			fmt.Println("Zero rows")
@@ -36,10 +37,10 @@ func getAlbums() []Album {
 	return albums
 }
 
-func getAlbum(id int) Album {
+func GetAlbum(id int) Album {
 	var album Album
 	sqlStatment := `SELECT * FROM albums WHERE id = $1`
-	row := db.QueryRow(sqlStatment, id)
+	row := db.DB.QueryRow(sqlStatment, id)
 	err := row.Scan(&album.Id, &album.Title, &album.ArtistId)
 	if err != nil {
 		if err == sql.ErrNoRows {
@@ -51,11 +52,11 @@ func getAlbum(id int) Album {
 	return album
 }
 
-func getAlbumSongs(id int) []Song {
+func GetAlbumSongs(id int) []Song {
 	var songs []Song
 	var song Song
 	sqlStatment := `SELECT * FROM songs WHERE album_id = $1`
-	rows, err := db.Query(sqlStatment, id)
+	rows, err := db.DB.Query(sqlStatment, id)
 	if err != nil {
 		if err == sql.ErrNoRows {
 			fmt.Println("Zero Rows")
