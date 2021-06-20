@@ -9,7 +9,7 @@ var DB *sql.DB
 
 func Start() {
 	db, err := sql.Open("postgres", "user=zach dbname=musicplayer")
-	defer db.Close()
+	// defer db.Close()
 	if err != nil {
 		panic(err)
 	}

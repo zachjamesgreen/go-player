@@ -14,17 +14,8 @@ func mount(r *mux.Router) {
 	// --------------
 	// Artists Routes
 	// --------------
-	r.HandleFunc("/artists", func(w http.ResponseWriter, res *http.Request) {
-		var artists = models.GetArtists()
-		json.NewEncoder(w).Encode(artists)
-	})
-	r.HandleFunc("/artists/{id}", func(w http.ResponseWriter, res *http.Request) {
-		vars := mux.Vars(res)
-		id, err := strconv.Atoi(vars["id"])
-		check(err)
-		var artist = models.GetArtist(id)
-		json.NewEncoder(w).Encode(artist)
-	})
+	r.HandleFunc("/artists", GetArtists)
+	r.HandleFunc("/artists/{id}", GetArtist)
 	r.HandleFunc("/artists/{id}/songs", func(w http.ResponseWriter, res *http.Request) {
 		vars := mux.Vars(res)
 		id, err := strconv.Atoi(vars["id"])

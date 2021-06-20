@@ -4,8 +4,9 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/gorilla/mux"
 	db "music/database"
+
+	"github.com/gorilla/mux"
 )
 
 // var db *sql.DB
@@ -16,13 +17,16 @@ func check(err error) {
 	}
 }
 
+var Router *mux.Router
+
 func main() {
 	db.Start()
-	r := mux.NewRouter()
-	mount(r)
-	http.Handle("/", r)
-	r.Use(loggingMiddleware)
-	r.Use(setCookies)
-	log.Fatal(http.ListenAndServe(":8081", nil))
+	defer db.DB.Close()
+	Router = mux.NewRouter()
+	mount(Router)
+	http.Handle("/", Router)
+	Router.Use(loggingMiddleware)
+	Router.Use(setCookies)
+	log.Fatal(http.ListenAndServe(":8081", Router))
 
 }
