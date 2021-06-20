@@ -11,7 +11,11 @@ import (
 	db "music/database"
 )
 
-func upload(file multipart.File, handler *multipart.FileHeader) {
+func upload(fileHeader *multipart.FileHeader) {
+	file,err := fileHeader.Open()
+	if err != nil {
+		fmt.Println(err)
+	}
 
 	// Get tags
 	artist, album, song, genreName := getTagData(file)
@@ -19,6 +23,7 @@ func upload(file multipart.File, handler *multipart.FileHeader) {
 	artist_id := createArtist(artist)
 	album_id := createAlbum(album, artist_id)
 	genre := createGenre(genreName)
+	
 
 	fileBytes, err := ioutil.ReadAll(file)
 	if err != nil {
@@ -30,7 +35,7 @@ func upload(file multipart.File, handler *multipart.FileHeader) {
 	if err != nil {
 		fmt.Println(err)
 	}
-	full := fmt.Sprintf("%s/%s", path, handler.Filename)
+	full := fmt.Sprintf("%s/%s", path, fileHeader.Filename)
 	err = ioutil.WriteFile(full, fileBytes, 0644)
 	if err != nil {
 		fmt.Println(err)

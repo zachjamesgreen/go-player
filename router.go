@@ -6,8 +6,9 @@ import (
 	"net/http"
 	"strconv"
 
-	"github.com/gorilla/mux"
 	"music/models"
+
+	"github.com/gorilla/mux"
 )
 
 func mount(r *mux.Router) {
@@ -64,20 +65,18 @@ func mount(r *mux.Router) {
 	// ------------
 	// Upload Route
 	// ------------
-	r.HandleFunc("/upload", func(w http.ResponseWriter, res *http.Request) {
-		res.ParseMultipartForm(10 << 20)
-		file, handler, err := res.FormFile("song")
-		if err != nil {
-			fmt.Println("Error Retrieving the File")
-			fmt.Println(err)
-			return
-		}
-		fmt.Printf("Uploaded File: %+v\n", handler.Filename)
-		fmt.Printf("File Size: %+v\n", handler.Size)
-		fmt.Printf("MIME Header: %+v\n", handler.Header)
+	r.HandleFunc("/upload", func(w http.ResponseWriter, req *http.Request) {
+		req.ParseMultipartForm(32 << 20)
+		files := req.MultipartForm.File["song"]
+		fmt.Println(files)
 
-		defer file.Close()
-		upload(file, handler)
+		for _, fileHeader := range files {
+			fmt.Printf("Uploaded File: %+v\n", fileHeader.Filename)
+			fmt.Printf("File Size: %+v\n", fileHeader.Size)
+			fmt.Printf("MIME Header: %+v\n", fileHeader.Header)
+			upload(fileHeader)
+		}
+
 		// return that we have successfully uploaded our file!
 		fmt.Fprintf(w, "Successfully Uploaded File\n")
 
