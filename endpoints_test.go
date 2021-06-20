@@ -43,5 +43,32 @@ func TestGetArtist(t *testing.T) {
 	ctype := res.Header["Content-Type"][0]
 	Equal(t, ctype, "application/json")
 	Equal(t, string(body), expected)
+}
 
+func TestGetArtistSongs(t *testing.T) {
+	db.Start()
+	res, err := http.Get("http://localhost:8081/artists/87/songs")
+	chk(t,err)
+
+	defer res.Body.Close()
+	body,err := io.ReadAll(res.Body)
+	chk(t,err)
+	expected := "[{\"id\":74,\"title\":\"Free\",\"track\":1,\"comment\":\"\",\"artist_id\":87,\"album_id\":79,\"path\":\"temp/Broods/Conscious\",\"genre\":{\"name\":\"Alternative/Indie\"}}]\n"
+	ctype := res.Header["Content-Type"][0]
+	Equal(t, ctype, "application/json")
+	Equal(t, string(body), expected)
+}
+
+func TestGetArtistAlbums(t *testing.T) {
+	db.Start()
+	res, err := http.Get("http://localhost:8081/artists/87/albums")
+	chk(t,err)
+
+	defer res.Body.Close()
+	body,err := io.ReadAll(res.Body)
+	chk(t,err)
+	expected := "[{\"id\":79,\"title\":\"Conscious\",\"artist_id\":87}]\n"
+	ctype := res.Header["Content-Type"][0]
+	Equal(t, ctype, "application/json")
+	Equal(t, string(body), expected)
 }
