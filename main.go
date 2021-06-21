@@ -9,8 +9,6 @@ import (
 	"github.com/gorilla/mux"
 )
 
-// var db *sql.DB
-
 func check(err error) {
 	if err != nil {
 		log.Fatal(err)
@@ -28,5 +26,4 @@ func main() {
 	Router.Use(loggingMiddleware)
 	Router.Use(setCookies)
 	log.Fatal(http.ListenAndServe(":8081", Router))
-
 }

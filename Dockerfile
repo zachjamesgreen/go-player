@@ -19,8 +19,9 @@ WORKDIR /dist
 
 RUN cp /build/main .
 
-FROM scratch
+# FROM scratch
 
-COPY --from=builder /dist/main /
+# COPY --from=builder /dist/main /
+EXPOSE 8081
 
-ENTRYPOINT ["/main"]
+ENTRYPOINT ["/dist/main"]

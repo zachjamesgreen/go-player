@@ -16,12 +16,15 @@ import (
 func UploadHandler(w http.ResponseWriter, req *http.Request) {
 	req.ParseMultipartForm(32 << 20)
 	files := req.MultipartForm.File["song"]
-	fmt.Println(files)
 
 	for _, fileHeader := range files {
+		if fileHeader.Header["Content-Type"][0] != "audio/mpeg" {
+			http.Error(w, "Can only handle audio/mpeg", http.StatusInternalServerError)
+			return
+		}
 		fmt.Printf("Uploaded File: %+v\n", fileHeader.Filename)
 		fmt.Printf("File Size: %+v\n", fileHeader.Size)
-		// fmt.Printf("MIME Header: %+v\n", fileHeader.Header)
+		fmt.Printf("MIME Header: %+v\n", fileHeader.Header["Content-Type"][0])
 		upload(fileHeader)
 	}
 
