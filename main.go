@@ -21,6 +21,7 @@ func main() {
 	db.Start()
 	defer db.DB.Close()
 	Router = mux.NewRouter()
+	Router.PathPrefix("/song/").Handler(http.StripPrefix("/song/", http.FileServer(http.Dir("./files/"))))
 	mount(Router)
 	http.Handle("/", Router)
 	Router.Use(loggingMiddleware)

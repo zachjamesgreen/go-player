@@ -61,7 +61,7 @@ func upload(fileHeader *multipart.FileHeader) {
 		fmt.Println(err)
 	}
 
-	createSong(song, artist_id, album_id, genre, path)
+	createSong(song, artist_id, album_id, genre, full)
 }
 
 func getTagData(file multipart.File) (models.Artist, models.Album, models.Song, models.Genre) {

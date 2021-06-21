@@ -10,10 +10,12 @@ import (
 )
 
 func GetArtists(w http.ResponseWriter, req *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(models.GetArtists())
 }
 
 func GetArtist(w http.ResponseWriter, req *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
 	vars := mux.Vars(req)
 	id, err := strconv.Atoi(vars["id"])
 	check(err)
@@ -21,6 +23,7 @@ func GetArtist(w http.ResponseWriter, req *http.Request) {
 }
 
 func GetArtistSongs(w http.ResponseWriter, req *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
 	vars := mux.Vars(req)
 	id, err := strconv.Atoi(vars["id"])
 	check(err)
@@ -28,6 +31,7 @@ func GetArtistSongs(w http.ResponseWriter, req *http.Request) {
 }
 
 func GetArtistAlbums(w http.ResponseWriter, req *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
 	vars := mux.Vars(req)
 	id, err := strconv.Atoi(vars["id"])
 	check(err)
