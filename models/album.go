@@ -16,7 +16,7 @@ type Album struct {
 func GetAlbums() []Album {
 	var album Album
 	var albums []Album
-	sqlStatment := `SELECT * FROM albums`
+	sqlStatment := `SELECT * FROM albums ORDER BY id`
 	rows, err := db.DB.Query(sqlStatment)
 	if err != nil {
 		if err == sql.ErrNoRows {
@@ -55,7 +55,7 @@ func GetAlbum(id int) Album {
 func GetAlbumSongs(id int) []Song {
 	var songs []Song
 	var song Song
-	sqlStatment := `SELECT * FROM songs WHERE album_id = $1`
+	sqlStatment := `SELECT * FROM songs WHERE album_id = $1 ORDER BY id`
 	rows, err := db.DB.Query(sqlStatment, id)
 	if err != nil {
 		if err == sql.ErrNoRows {

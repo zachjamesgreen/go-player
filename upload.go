@@ -4,15 +4,33 @@ import (
 	"fmt"
 	"io/ioutil"
 	"mime/multipart"
+	"net/http"
 	"os"
 
-	"github.com/dhowden/tag"
-	"music/models"
 	db "music/database"
+	"music/models"
+
+	"github.com/dhowden/tag"
 )
 
+func UploadHandler(w http.ResponseWriter, req *http.Request) {
+	req.ParseMultipartForm(32 << 20)
+	files := req.MultipartForm.File["song"]
+	fmt.Println(files)
+
+	for _, fileHeader := range files {
+		fmt.Printf("Uploaded File: %+v\n", fileHeader.Filename)
+		fmt.Printf("File Size: %+v\n", fileHeader.Size)
+		// fmt.Printf("MIME Header: %+v\n", fileHeader.Header)
+		upload(fileHeader)
+	}
+
+	// return that we have successfully uploaded our file!
+	fmt.Fprintf(w, "Successfully Uploaded File\n")
+}
+
 func upload(fileHeader *multipart.FileHeader) {
-	file,err := fileHeader.Open()
+	file, err := fileHeader.Open()
 	if err != nil {
 		fmt.Println(err)
 	}
@@ -23,7 +41,6 @@ func upload(fileHeader *multipart.FileHeader) {
 	artist_id := createArtist(artist)
 	album_id := createAlbum(album, artist_id)
 	genre := createGenre(genreName)
-	
 
 	fileBytes, err := ioutil.ReadAll(file)
 	if err != nil {

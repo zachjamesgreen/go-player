@@ -33,7 +33,7 @@ func (g Genre) String() string {
 func GetSongs() []Song {
 	var song Song
 	var songs []Song
-	sqlStatment := `SELECT * FROM songs`
+	sqlStatment := `SELECT * FROM songs ORDER BY id`
 	rows, err := db.DB.Query(sqlStatment)
 	if err != nil {
 		if err == sql.ErrNoRows {
@@ -48,7 +48,6 @@ func GetSongs() []Song {
 		if err != nil {
 			log.Fatal(err)
 		}
-		// Artist{Id: id, Name: name}
 		songs = append(songs, song)
 	}
 	return songs
