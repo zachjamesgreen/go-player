@@ -27,6 +27,6 @@ func main() {
 	http.Handle("/", Router)
 	Router.Use(loggingMiddleware)
 	Router.Use(setCookies)
-	Router.Use(auth)
+	// Router.Use(auth)
 	log.Fatal(http.ListenAndServe(":8081", Router))
 }

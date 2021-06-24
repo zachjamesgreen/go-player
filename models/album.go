@@ -37,8 +37,7 @@ func GetAlbums() []Album {
 	return albums
 }
 
-func GetAlbum(id int) Album {
-	var album Album
+func GetAlbum(id int) (album Album) {
 	sqlStatment := `SELECT * FROM albums WHERE id = $1`
 	row := db.DB.QueryRow(sqlStatment, id)
 	err := row.Scan(&album.Id, &album.Title, &album.ArtistId)
@@ -49,7 +48,7 @@ func GetAlbum(id int) Album {
 			panic(err)
 		}
 	}
-	return album
+	return
 }
 
 func GetAlbumSongs(id int) []Song {

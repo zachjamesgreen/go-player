@@ -33,6 +33,15 @@ ALTER SEQUENCE songs_id_seq RESTART WITH 1;
 --   UNIQUE (title, artist_id, album_id)
 --   );
 
+-- create table users (
+--   id serial primary key,
+--   username varchar NOT NULL,
+--   password varchar NOT NULL,
+--   created_at timestamp,
+--   updated_at timestamp,
+--   UNIQUE (username)
+-- );
+
 INSERT INTO artists (id,name) VALUES
 (1, 'Broods'),
 (2, 'BANKS'),
