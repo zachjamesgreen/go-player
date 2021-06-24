@@ -18,6 +18,7 @@ func check(err error) {
 var Router *mux.Router
 
 func main() {
+	log.SetFlags(log.LstdFlags | log.Lshortfile)
 	db.Start()
 	defer db.DB.Close()
 	Router = mux.NewRouter()
@@ -26,5 +27,6 @@ func main() {
 	http.Handle("/", Router)
 	Router.Use(loggingMiddleware)
 	Router.Use(setCookies)
+	Router.Use(auth)
 	log.Fatal(http.ListenAndServe(":8081", Router))
 }
