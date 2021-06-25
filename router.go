@@ -2,6 +2,7 @@ package main
 
 import (
 	"github.com/gorilla/mux"
+	. "music/controllers"
 )
 
 func mount(r *mux.Router) {

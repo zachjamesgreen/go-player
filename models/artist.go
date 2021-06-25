@@ -55,7 +55,13 @@ func GetArtist(id int) Artist {
 func GetArtistSongs(artist_id int) []Song {
 	var song Song
 	var songs []Song
-	sqlStatment := `SELECT * FROM songs WHERE artist_id = $1 ORDER BY id`
+	sqlStatment := `
+	SELECT s.id, s.title, s.track, s.comment, s.year, s.last_played, s.path, s.genre, s.album_id, s.artist_id, al.title as album_title, ar.name
+	FROM songs AS s 
+	JOIN albums AS al ON s.album_id = al.id 
+	JOIN artists AS ar ON s.artist_id = ar.id 
+	WHERE ar.id = $1
+	ORDER BY s.id`
 	rows, err := db.DB.Query(sqlStatment, artist_id)
 	if err != nil {
 		if err == sql.ErrNoRows {
@@ -66,7 +72,8 @@ func GetArtistSongs(artist_id int) []Song {
 	}
 	defer rows.Close()
 	for rows.Next() {
-		err := rows.Scan(&song.Id, &song.Title, &song.Track, &song.Comment, &song.AlbumId, &song.ArtistId, &song.Genre.Name, &song.Path)
+		// err := rows.Scan(&song.Id, &song.Title, &song.Track, &song.Comment, &song.AlbumId, &song.ArtistId, &song.Genre.Name, &song.Path, &song.Year, &song.LastPlayed)
+		err := rows.Scan(&song.Id, &song.Title, &song.Track, &song.Comment, &song.Year, &song.LastPlayed, &song.Path, &song.Genre.Name, &song.AlbumId, &song.ArtistId, &song.Album, &song.Artist)
 		if err != nil {
 			log.Fatal(err)
 		}
