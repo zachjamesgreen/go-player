@@ -2,6 +2,7 @@ package main
 
 import (
 	"log"
+	"net"
 	"net/http"
 
 	db "music/database"
@@ -28,5 +29,10 @@ func main() {
 	Router.Use(auth)
 	Router.Use(setHeaders)
 	Router.Use(loggingMiddleware)
-	log.Fatal(http.ListenAndServe(":8081", Router))
+	l, _ := net.Listen("tcp4", "localhost:8081")
+	s := &http.Server{
+		Handler: Router,
+	}
+	log.Fatal(s.Serve(l))
+	// log.Fatal(http.ListenAndServe("0.0.0.0:8081", Router))
 }

@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"io/ioutil"
+	"log"
 	"mime/multipart"
 	"net/http"
 	"os"
@@ -26,7 +27,7 @@ func UploadHandler(w http.ResponseWriter, req *http.Request) {
 			fmt.Printf("MIME Header: %+v\n", fileHeader.Header["Content-Type"][0])
 			upload(fileHeader)
 		}
-		
+
 		// return that we have successfully uploaded our file!
 		fmt.Fprintf(w, "Successfully Uploaded File\n")
 	} else {
@@ -70,12 +71,20 @@ func upload(fileHeader *multipart.FileHeader) {
 func getTagData(file multipart.File) (models.Artist, models.Album, models.Song, models.Genre) {
 	data, err := tag.ReadFrom(file)
 	check(err)
-
+	
 	var artist = models.Artist{Name: data.Artist()}
 	var album = models.Album{Title: data.Album(), ArtistId: 0}
 	track, _ := data.Track()
 	genreName := models.Genre{Name: data.Genre()}
 	var song = models.Song{Title: data.Title(), Track: track, Comment: data.Comment(), Genre: genreName, ArtistId: 0, AlbumId: 0, Year: data.Year()}
+
+	// Save Image
+	path := fmt.Sprintf("files/%s/%s/%s.%s", artist.Name, album.Title, "image", data.Picture().Ext)
+	err = ioutil.WriteFile(path, data.Picture().Data, 0644)
+	if err != nil {
+		fmt.Println(err)
+	}
+
 	return artist, album, song, genreName
 }
 

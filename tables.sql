@@ -42,8 +42,10 @@ ALTER SEQUENCE songs_id_seq RESTART WITH 1;
 --   UNIQUE (username)
 -- );
 
--- alter table songs add column last_played timestamp;
--- alter table songs add column year int;
+alter table songs add column last_played timestamp;
+alter table songs add column year int default 0;
+alter table songs add column created_at timestamp default now();
+alter table songs add column updated_at timestamp default now();
 
 INSERT INTO artists (id,name) VALUES
 (1, 'Broods'),
