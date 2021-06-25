@@ -12,12 +12,16 @@ type Album struct {
 	Title    string `json:"title"`
 	ArtistId int    `json:"artist_id"`
 	Image    bool   `json:"image"`
+	Artist   string `json:"artist"`
 }
 
 func GetAlbums() (albums []Album) {
 	log.Println("Getting Albums")
 	var album Album
-	sqlStatment := `SELECT * FROM albums ORDER BY id`
+	sqlStatment := `
+	SELECT albums.*, artists.name FROM albums
+	JOIN artists on albums.artist_id = artists.id
+	ORDER BY id`
 	rows, err := db.DB.Query(sqlStatment)
 	if err != nil {
 		if err == sql.ErrNoRows {
@@ -28,7 +32,7 @@ func GetAlbums() (albums []Album) {
 	}
 	defer rows.Close()
 	for rows.Next() {
-		err := rows.Scan(&album.Id, &album.Title, &album.ArtistId, &album.Image)
+		err := rows.Scan(&album.Id, &album.Title, &album.ArtistId, &album.Image, &album.Artist)
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -39,9 +43,12 @@ func GetAlbums() (albums []Album) {
 }
 
 func GetAlbum(id int) (album Album) {
-	sqlStatment := `SELECT * FROM albums WHERE id = $1`
+	sqlStatment := `
+	SELECT albums.*, artists.name FROM albums
+	JOIN artists on albums.artist_id = artists.id 
+	WHERE id = $1`
 	row := db.DB.QueryRow(sqlStatment, id)
-	err := row.Scan(&album.Id, &album.Title, &album.ArtistId, &album.Image)
+	err := row.Scan(&album.Id, &album.Title, &album.ArtistId, &album.Image, &album.Artist)
 	if err != nil {
 		if err == sql.ErrNoRows {
 			fmt.Println("Zero rows")
