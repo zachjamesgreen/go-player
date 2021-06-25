@@ -21,7 +21,7 @@ var Router *mux.Router
 
 func main() {
 
-	f, err := os.OpenFile("logfile.log", os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
+	f, err := os.OpenFile("files/logfile.log", os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
 	if err != nil {
 		log.Fatalf("error opening file: %v", err)
 	}
@@ -29,7 +29,6 @@ func main() {
 
 	log.SetFlags(log.LstdFlags | log.Lshortfile)
 	log.SetOutput(f)
-	log.Println("This is a test log entry")
 
 	db.Start()
 	defer db.DB.Close()
@@ -45,5 +44,6 @@ func main() {
 	// 	Handler: Router,
 	// }
 	// log.Fatal(s.Serve(l))
+	log.Println("Starting Server")
 	log.Fatal(http.ListenAndServe("0.0.0.0:8081", Router))
 }

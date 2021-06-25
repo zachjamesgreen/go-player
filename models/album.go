@@ -15,6 +15,7 @@ type Album struct {
 }
 
 func GetAlbums() (albums []Album) {
+	log.Println("Getting Albums")
 	var album Album
 	sqlStatment := `SELECT * FROM albums ORDER BY id`
 	rows, err := db.DB.Query(sqlStatment)
@@ -27,7 +28,7 @@ func GetAlbums() (albums []Album) {
 	}
 	defer rows.Close()
 	for rows.Next() {
-		err := rows.Scan(&album.Id, &album.Title, &album.ArtistId)
+		err := rows.Scan(&album.Id, &album.Title, &album.ArtistId, &album.Image)
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -40,7 +41,7 @@ func GetAlbums() (albums []Album) {
 func GetAlbum(id int) (album Album) {
 	sqlStatment := `SELECT * FROM albums WHERE id = $1`
 	row := db.DB.QueryRow(sqlStatment, id)
-	err := row.Scan(&album.Id, &album.Title, &album.ArtistId)
+	err := row.Scan(&album.Id, &album.Title, &album.ArtistId, &album.Image)
 	if err != nil {
 		if err == sql.ErrNoRows {
 			fmt.Println("Zero rows")
