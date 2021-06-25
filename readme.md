@@ -1,5 +1,6 @@
 ### Go Player
-Learning Go by creating a music player
+Learning Go by creating a music player.
+This is just a small project to help me learn something about Go.
 
 ## Routes
 | Path | Description |

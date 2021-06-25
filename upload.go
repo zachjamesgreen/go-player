@@ -71,7 +71,7 @@ func upload(fileHeader *multipart.FileHeader) {
 func getTagData(file multipart.File) (models.Artist, models.Album, models.Song, models.Genre) {
 	data, err := tag.ReadFrom(file)
 	check(err)
-	
+
 	var artist = models.Artist{Name: data.Artist()}
 	var album = models.Album{Title: data.Album(), ArtistId: 0}
 	track, _ := data.Track()
@@ -79,13 +79,28 @@ func getTagData(file multipart.File) (models.Artist, models.Album, models.Song, 
 	var song = models.Song{Title: data.Title(), Track: track, Comment: data.Comment(), Genre: genreName, ArtistId: 0, AlbumId: 0, Year: data.Year()}
 
 	// Save Image
-	path := fmt.Sprintf("files/%s/%s/%s.%s", artist.Name, album.Title, "image", data.Picture().Ext)
+	log.Print(data.Picture().Ext == "")
+	path := fmt.Sprintf("files/%s/%s/%s.%s", artist.Name, album.Title, "image", mimeTypeToExt(data.Picture()))
 	err = ioutil.WriteFile(path, data.Picture().Data, 0644)
 	if err != nil {
 		fmt.Println(err)
+	} else {
+		album.Image = true
 	}
 
 	return artist, album, song, genreName
+}
+
+func mimeTypeToExt(picture *tag.Picture) string {
+	var mt string
+	if picture.Ext != "" {
+		mt = picture.Ext
+	} else if picture.MIMEType == "image/jpg" {
+		mt = "jpg"
+	} else if picture.MIMEType == "image/jpeg" {
+		mt = "jpg"
+	}
+	return mt
 }
 
 func createArtist(artist models.Artist) string {
@@ -98,7 +113,7 @@ func createArtist(artist models.Artist) string {
 
 func createAlbum(album models.Album, artist_id string) string {
 	var album_id string
-	db.DB.QueryRow("INSERT INTO albums (title, artist_id) VALUES ($1, $2) ON CONFLICT (title, artist_id) DO UPDATE SET title=EXCLUDED.title returning id;", album.Title, artist_id).Scan(&album_id)
+	db.DB.QueryRow("INSERT INTO albums (title, artist_id, image) VALUES ($1, $2, $3) ON CONFLICT (title, artist_id) DO UPDATE SET title=EXCLUDED.title returning id;", album.Title, artist_id, album.Image).Scan(&album_id)
 	return album_id
 }
 

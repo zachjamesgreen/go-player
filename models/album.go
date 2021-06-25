@@ -11,6 +11,7 @@ type Album struct {
 	Id       int    `json:"id"`
 	Title    string `json:"title"`
 	ArtistId int    `json:"artist_id"`
+	Image    bool   `json:"image"`
 }
 
 func GetAlbums() (albums []Album) {
