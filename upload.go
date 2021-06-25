@@ -79,10 +79,10 @@ func getTagData(file multipart.File) (models.Artist, models.Album, models.Song, 
 	var song = models.Song{Title: data.Title(), Track: track, Comment: data.Comment(), Genre: genreName, ArtistId: 0, AlbumId: 0, Year: data.Year()}
 
 	// Save Image
-	log.Print(data.Picture().Ext == "")
 	path := fmt.Sprintf("files/%s/%s/%s.%s", artist.Name, album.Title, "image", mimeTypeToExt(data.Picture()))
 	err = ioutil.WriteFile(path, data.Picture().Data, 0644)
 	if err != nil {
+		log.Println(err)
 		fmt.Println(err)
 	} else {
 		album.Image = true
