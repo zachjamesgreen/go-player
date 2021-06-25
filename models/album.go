@@ -13,9 +13,8 @@ type Album struct {
 	ArtistId int    `json:"artist_id"`
 }
 
-func GetAlbums() []Album {
+func GetAlbums() (albums []Album) {
 	var album Album
-	var albums []Album
 	sqlStatment := `SELECT * FROM albums ORDER BY id`
 	rows, err := db.DB.Query(sqlStatment)
 	if err != nil {
@@ -51,8 +50,7 @@ func GetAlbum(id int) (album Album) {
 	return
 }
 
-func GetAlbumSongs(id int) []Song {
-	var songs []Song
+func GetAlbumSongs(id int) (songs []Song) {
 	var song Song
 	sqlStatment := `SELECT * FROM songs WHERE album_id = $1 ORDER BY id`
 	rows, err := db.DB.Query(sqlStatment, id)

@@ -2,8 +2,10 @@ package main
 
 import (
 	"log"
+	"music/models"
 	"net/http"
-	"os"
+
+	"golang.org/x/crypto/bcrypt"
 )
 
 func loggingMiddleware(next http.Handler) http.Handler {
@@ -15,7 +17,7 @@ func loggingMiddleware(next http.Handler) http.Handler {
 	})
 }
 
-func setCookies(next http.Handler) http.Handler {
+func setHeaders(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		// w.Header().Set("Content-Type", "application/json")
 		w.Header().Set("Access-Control-Allow-Origin", "*")
@@ -24,18 +26,44 @@ func setCookies(next http.Handler) http.Handler {
 }
 
 func auth(next http.Handler) http.Handler {
-	user := os.Getenv("GO_USER")
-	password := os.Getenv("GO_PASSWORD")
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		u, p, ok := r.BasicAuth()
-		if !ok {
-			http.Error(w, "Forbidden", http.StatusForbidden)
-			return
+		if r.RequestURI == "/upload" {
+			u, p, ok := r.BasicAuth()
+			user := models.GetUserByUsername(u)
+			if !ok {
+				http.Error(w, "Forbidden", http.StatusForbidden)
+				return
+			}
+			if u != user.Username {
+				http.Error(w, "Unauthorized", http.StatusUnauthorized)
+				return
+			}
+			err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(p))
+			if err != nil {
+				log.Print(err)
+				http.Error(w, "Unauthorized", http.StatusUnauthorized)
+				return
+			}
 		}
-		if u != user || p != password {
-			http.Error(w, "Forbidden", http.StatusUnauthorized)
-			return
-		}
+		log.Print("Authorized")
 		next.ServeHTTP(w, r)
 	})
 }
+
+// func checkCredentials() {
+// 	u, p, ok := r.BasicAuth()
+// 	log.Print(p)
+// 	user := models.GetUserByUsername()
+// 	if !ok {
+// 		http.Error(w, "Forbidden", http.StatusForbidden)
+// 		return
+// 	}
+// 	if u != user.Username {
+// 		http.Error(w, "Forbidden", http.StatusUnauthorized)
+// 		return
+// 	}
+// 	if bcrypt.CompareHashAndPassword(p) {
+
+// 	}
+
+// }

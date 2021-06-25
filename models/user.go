@@ -12,7 +12,7 @@ import (
 type User struct {
 	Id        int    `json:"id"`
 	Username  string `json:"username"`
-	password  string
+	Password  string
 	CreatedAt string `json:"created_at"`
 	UpdatedAt string `json:"updated_at"`
 }
@@ -31,10 +31,10 @@ func GetUserById(id int) (user User) {
 	return
 }
 
-func GetUserByUsername(id int) (user User) {
-	sqlStatment := `SELECT id,username,created_at,updated_at FROM users WHERE username = $1 LIMIT 1`
-	row := db.DB.QueryRow(sqlStatment, id)
-	err := row.Scan(&user.Id, &user.Username, &user.CreatedAt, &user.UpdatedAt)
+func GetUserByUsername(username string) (user User) {
+	sqlStatment := `SELECT id,username,password,created_at,updated_at FROM users WHERE username = $1`
+	row := db.DB.QueryRow(sqlStatment, username)
+	err := row.Scan(&user.Id, &user.Username, &user.Password, &user.CreatedAt, &user.UpdatedAt)
 	if err != nil {
 		if err == sql.ErrNoRows {
 			fmt.Println("Zero rows")

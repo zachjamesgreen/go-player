@@ -20,3 +20,10 @@ func GetUserById(w http.ResponseWriter, req *http.Request) {
 	check(err)
 	json.NewEncoder(w).Encode(models.GetUserById(id))
 }
+
+func GetUserByUsername(w http.ResponseWriter, req *http.Request) {
+	vars := mux.Vars(req)
+	id, err := strconv.Atoi(vars["id"])
+	check(err)
+	json.NewEncoder(w).Encode(models.GetUserById(id))
+}

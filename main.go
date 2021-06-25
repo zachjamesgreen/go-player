@@ -25,8 +25,8 @@ func main() {
 	Router.PathPrefix("/song/").Handler(http.StripPrefix("/song/", http.FileServer(http.Dir("./files/"))))
 	mount(Router)
 	http.Handle("/", Router)
+	Router.Use(auth)
+	Router.Use(setHeaders)
 	Router.Use(loggingMiddleware)
-	Router.Use(setCookies)
-	// Router.Use(auth)
 	log.Fatal(http.ListenAndServe(":8081", Router))
 }

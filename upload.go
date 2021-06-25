@@ -15,21 +15,24 @@ import (
 
 func UploadHandler(w http.ResponseWriter, req *http.Request) {
 	req.ParseMultipartForm(32 << 20)
-	files := req.MultipartForm.File["song"]
-
-	for _, fileHeader := range files {
-		if fileHeader.Header["Content-Type"][0] != "audio/mpeg" {
-			http.Error(w, "Can only handle audio/mpeg", http.StatusInternalServerError)
-			return
+	if files, ok := req.MultipartForm.File["song"]; ok {
+		for _, fileHeader := range files {
+			if fileHeader.Header["Content-Type"][0] != "audio/mpeg" {
+				http.Error(w, "Can only handle audio/mpeg", http.StatusInternalServerError)
+				return
+			}
+			fmt.Printf("Uploaded File: %+v\n", fileHeader.Filename)
+			fmt.Printf("File Size: %+v\n", fileHeader.Size)
+			fmt.Printf("MIME Header: %+v\n", fileHeader.Header["Content-Type"][0])
+			upload(fileHeader)
 		}
-		fmt.Printf("Uploaded File: %+v\n", fileHeader.Filename)
-		fmt.Printf("File Size: %+v\n", fileHeader.Size)
-		fmt.Printf("MIME Header: %+v\n", fileHeader.Header["Content-Type"][0])
-		upload(fileHeader)
+	
+		// return that we have successfully uploaded our file!
+		fmt.Fprintf(w, "Successfully Uploaded File\n")
+	} else {
+		http.Error(w, "Unprocessable Entity", http.StatusUnprocessableEntity)
+		return
 	}
-
-	// return that we have successfully uploaded our file!
-	fmt.Fprintf(w, "Successfully Uploaded File\n")
 }
 
 func upload(fileHeader *multipart.FileHeader) {
