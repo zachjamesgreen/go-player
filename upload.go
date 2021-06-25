@@ -26,7 +26,7 @@ func UploadHandler(w http.ResponseWriter, req *http.Request) {
 			fmt.Printf("MIME Header: %+v\n", fileHeader.Header["Content-Type"][0])
 			upload(fileHeader)
 		}
-	
+		
 		// return that we have successfully uploaded our file!
 		fmt.Fprintf(w, "Successfully Uploaded File\n")
 	} else {
@@ -75,7 +75,7 @@ func getTagData(file multipart.File) (models.Artist, models.Album, models.Song, 
 	var album = models.Album{Title: data.Album(), ArtistId: 0}
 	track, _ := data.Track()
 	genreName := models.Genre{Name: data.Genre()}
-	var song = models.Song{Title: data.Title(), Track: track, Comment: data.Comment(), Genre: genreName, ArtistId: 0, AlbumId: 0}
+	var song = models.Song{Title: data.Title(), Track: track, Comment: data.Comment(), Genre: genreName, ArtistId: 0, AlbumId: 0, Year: data.Year()}
 	return artist, album, song, genreName
 }
 
@@ -100,6 +100,6 @@ func createGenre(genre models.Genre) string {
 }
 
 func createSong(song models.Song, artist_id, album_id, genre, path string) {
-	_, err := db.DB.Exec("INSERT INTO songs (title, track, comment, album_id, artist_id, genre, path) VALUES ($1,$2,$3,$4,$5,$6,$7) ON CONFLICT (title, artist_id, album_id) DO UPDATE SET title=EXCLUDED.title returning id;", song.Title, song.Track, song.Comment, album_id, artist_id, genre, path)
+	_, err := db.DB.Exec("INSERT INTO songs (title, track, comment, album_id, artist_id, genre, path, year) VALUES ($1,$2,$3,$4,$5,$6,$7,$8) ON CONFLICT (title, artist_id, album_id) DO UPDATE SET title=EXCLUDED.title returning id;", song.Title, song.Track, song.Comment, album_id, artist_id, genre, path, song.Year)
 	check(err)
 }

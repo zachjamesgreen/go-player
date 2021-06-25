@@ -42,6 +42,9 @@ ALTER SEQUENCE songs_id_seq RESTART WITH 1;
 --   UNIQUE (username)
 -- );
 
+-- alter table songs add column last_played timestamp;
+-- alter table songs add column year int;
+
 INSERT INTO artists (id,name) VALUES
 (1, 'Broods'),
 (2, 'BANKS'),
@@ -71,3 +74,8 @@ INSERT INTO songs (id,title,track,comment,album_id,artist_id,genre,path) VALUES
 (8,'The Ecstatics',2,'',5,5,'Alternative/Indie','files/Explosions In The Sky/The Wilderness'),
 (9,'Torn Clean',2,'',4,4,'Alternative/Indie','files/Sleigh Bells/Jessica Rabbit'),
 (10,'We Had Everything',2,'',1,1,'Alternative/Indie','files/Broods/Conscious');
+
+
+select s.id, s.title, s.track, s.comment, s.year, s.last_played, s.path, s.album_id, s.artist_id, al.title as album_title, ar.name from songs as s
+full join albums as al on s.album_id = al.id
+full join artists as ar on s.artist_id = ar.id;

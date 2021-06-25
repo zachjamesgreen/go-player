@@ -13,8 +13,8 @@ type User struct {
 	Id        int    `json:"id"`
 	Username  string `json:"username"`
 	Password  string
-	CreatedAt string `json:"created_at"`
-	UpdatedAt string `json:"updated_at"`
+	CreatedAt time.Time   `json:"created_at"`
+	UpdatedAt time.Time `json:"updated_at"`
 }
 
 func GetUserById(id int) (user User) {

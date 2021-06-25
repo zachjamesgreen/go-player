@@ -5,17 +5,20 @@ import (
 	"fmt"
 	"log"
 	db "music/database"
+	"time"
 )
 
 type Song struct {
-	Id       int    `json:"id"`
-	Title    string `json:"title"`
-	Track    int    `json:"track"`
-	Comment  string `json:"comment"`
-	ArtistId int    `json:"artist_id"`
-	AlbumId  int    `json:"album_id"`
-	Path     string `json:"path"`
-	Genre    Genre  `json:"genre"`
+	Id         int       `json:"id"`
+	Title      string    `json:"title"`
+	Track      int       `json:"track"`
+	Comment    string    `json:"comment"`
+	Year       int    `json:"year"`
+	LastPlayed time.Time `json:"last_played"`
+	ArtistId   int       `json:"artist_id"`
+	AlbumId    int       `json:"album_id"`
+	Path       string    `json:"path"`
+	Genre      Genre     `json:"genre"`
 }
 
 type Genre struct {
