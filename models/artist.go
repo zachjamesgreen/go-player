@@ -97,7 +97,7 @@ func GetArtistAlbums(artist_id int) []Album {
 	}
 	defer rows.Close()
 	for rows.Next() {
-		err := rows.Scan(&album.Id, &album.Title, &album.ArtistId)
+		err := rows.Scan(&album.Id, &album.Title, &album.ArtistId, &album.Artist)
 		if err != nil {
 			log.Fatal(err)
 		}
