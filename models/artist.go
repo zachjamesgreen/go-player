@@ -7,7 +7,6 @@ import (
 	db "music/database"
 )
 
-
 type Artist struct {
 	Id   int    `json:"id"`
 	Name string `json:"name"`
@@ -86,7 +85,11 @@ func GetArtistSongs(artist_id int) []Song {
 func GetArtistAlbums(artist_id int) []Album {
 	var album Album
 	var albums []Album
-	sqlStatment := `SELECT * FROM albums WHERE artist_id = $1 ORDER BY id`
+	// sqlStatment := `SELECT * FROM albums WHERE artist_id = $1 ORDER BY id`
+	sqlStatment := `
+	SELECT albums.*, artists.name FROM albums
+	JOIN artists on albums.artist_id = artists.id 
+	WHERE artists.id = $1`
 	rows, err := db.DB.Query(sqlStatment, artist_id)
 	if err != nil {
 		if err == sql.ErrNoRows {
@@ -97,7 +100,7 @@ func GetArtistAlbums(artist_id int) []Album {
 	}
 	defer rows.Close()
 	for rows.Next() {
-		err := rows.Scan(&album.Id, &album.Title, &album.ArtistId, &album.Artist)
+		err := rows.Scan(&album.Id, &album.Title, &album.ArtistId, &album.Image, &album.Artist)
 		if err != nil {
 			log.Fatal(err)
 		}

@@ -46,7 +46,7 @@ func GetAlbum(id int) (album Album) {
 	sqlStatment := `
 	SELECT albums.*, artists.name FROM albums
 	JOIN artists on albums.artist_id = artists.id 
-	WHERE id = $1`
+	WHERE albums.id = $1`
 	row := db.DB.QueryRow(sqlStatment, id)
 	err := row.Scan(&album.Id, &album.Title, &album.ArtistId, &album.Image, &album.Artist)
 	if err != nil {
