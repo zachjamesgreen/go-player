@@ -18,10 +18,10 @@ func UploadHandler(w http.ResponseWriter, req *http.Request) {
 	req.ParseMultipartForm(32 << 20)
 	if files, ok := req.MultipartForm.File["song"]; ok {
 		for _, fileHeader := range files {
-			if fileHeader.Header["Content-Type"][0] != "audio/mpeg" {
-				http.Error(w, "Can only handle audio/mpeg", http.StatusInternalServerError)
-				return
-			}
+			// if fileHeader.Header["Content-Type"][0] != "audio/mpeg" {
+			// 	http.Error(w, "Can only handle audio/mpeg", http.StatusInternalServerError)
+			// 	return
+			// }
 			fmt.Printf("Uploaded File: %+v\n", fileHeader.Filename)
 			fmt.Printf("File Size: %+v\n", fileHeader.Size)
 			fmt.Printf("MIME Header: %+v\n", fileHeader.Header["Content-Type"][0])
@@ -79,28 +79,38 @@ func getTagData(file multipart.File) (models.Artist, models.Album, models.Song, 
 	var song = models.Song{Title: data.Title(), Track: track, Comment: data.Comment(), Genre: genreName, ArtistId: 0, AlbumId: 0, Year: data.Year()}
 
 	// Save Image
-	path := fmt.Sprintf("files/%s/%s/%s.%s", artist.Name, album.Title, "image", mimeTypeToExt(data.Picture()))
-	err = ioutil.WriteFile(path, data.Picture().Data, 0644)
+	ext, err := mimeTypeToExt(data.Picture())
 	if err != nil {
 		log.Println(err)
-		fmt.Println(err)
 	} else {
-		album.Image = true
+		path := fmt.Sprintf("files/%s/%s/%s.%s", artist.Name, album.Title, "image", ext)
+		err = ioutil.WriteFile(path, data.Picture().Data, 0644)
+		if err != nil {
+			log.Println(err)
+			fmt.Println(err)
+		} else {
+			album.Image = true
+		}
 	}
 
 	return artist, album, song, genreName
 }
 
-func mimeTypeToExt(picture *tag.Picture) string {
-	var mt string
-	if picture.Ext != "" {
-		mt = picture.Ext
-	} else if picture.MIMEType == "image/jpg" {
-		mt = "jpg"
-	} else if picture.MIMEType == "image/jpeg" {
-		mt = "jpg"
+func mimeTypeToExt(picture *tag.Picture) (mt string, err error) {
+	err = nil
+	fmt.Println(picture)
+	if picture != nil {
+		if picture.Ext != "" {
+			mt = picture.Ext
+		} else if picture.MIMEType == "image/jpg" {
+			mt = "jpg"
+		} else if picture.MIMEType == "image/jpeg" {
+			mt = "jpg"
+		}
+	} else {
+		err = fmt.Errorf("No picture")
 	}
-	return mt
+	return
 }
 
 func createArtist(artist models.Artist) string {
