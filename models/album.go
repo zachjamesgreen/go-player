@@ -15,6 +15,17 @@ type Album struct {
 	Artist   string `json:"artist"`
 }
 
+func (album Album) Create(artist_id string) (album_id string, err error) {
+	err = nil
+	album.Image = false
+	sql := `
+	INSERT INTO albums (title, artist_id, image) 
+	VALUES ($1, $2, $3) ON CONFLICT (title, artist_id) DO UPDATE SET title=EXCLUDED.title 
+	returning id`
+	db.DB.QueryRow(sql, album.Title, artist_id, album.Image).Scan(&album_id)
+	return
+}
+
 func GetAlbums() (albums []Album) {
 	log.Println("Getting Albums")
 	var album Album

@@ -82,6 +82,6 @@ INSERT INTO songs (id,title,track,comment,album_id,artist_id,genre,path,year) VA
 (12,'Same Old Blues',2,'',6,6,'Alternative/Indie','files/Phantogram/Three/02 Same Old Blues.mp3',2016);
 
 
--- select s.id, s.title, s.track, s.comment, s.year, s.last_played, s.path, s.album_id, s.artist_id, al.title as album_title, ar.name from songs as s
+-- select s.id, s.title, s.track, s.comment, s.year, s.last_played, s.path, s.album_id, s.artist_id, s.duration, s.created_at, al.title as album_title, ar.name from songs as s
 -- full join albums as al on s.album_id = al.id
 -- full join artists as ar on s.artist_id = ar.id;

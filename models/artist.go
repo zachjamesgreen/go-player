@@ -12,6 +12,11 @@ type Artist struct {
 	Name string `json:"name"`
 }
 
+func (artist Artist) Create() (artist_id string, err error) {
+	err = db.DB.QueryRow("INSERT INTO artists (name) VALUES ($1) ON CONFLICT (name) DO UPDATE SET name=EXCLUDED.name returning id;", artist.Name).Scan(&artist_id)
+	return
+}
+
 func GetArtists() []Artist {
 	var artist Artist
 	var artists []Artist
