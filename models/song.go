@@ -22,6 +22,7 @@ type Song struct {
 	Path       string       `json:"path"`
 	Genre      Genre        `json:"genre"`
 	Duration   uint64       `json:"duration"`
+	CreatedAt  time.Time    `json:"created_at"`
 }
 
 type Genre struct {
