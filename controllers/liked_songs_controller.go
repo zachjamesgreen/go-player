@@ -2,7 +2,6 @@ package controllers
 
 import (
 	"encoding/json"
-	"fmt"
 	"log"
 	"music/models"
 	"net/http"
@@ -34,7 +33,6 @@ func LikeSong(w http.ResponseWriter, req *http.Request) {
 }
 
 func UnlikeSong(w http.ResponseWriter, req *http.Request) {
-	fmt.Println("Need to delete")
 	w.Header().Set("Content-Type", "application/json")
 	vars := mux.Vars(req)
 	id, err := strconv.Atoi(vars["id"])

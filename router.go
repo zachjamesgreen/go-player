@@ -40,7 +40,7 @@ func mount(r *mux.Router) {
 	// Liked Songs Route
 	//------------------
 	r.HandleFunc("/liked/{id}/remove", UnlikeSong)
-	r.HandleFunc("/liked/{id}", LikeSong).Methods("POST")
+	r.HandleFunc("/liked/{id}", LikeSong)
 	r.HandleFunc("/liked", GetLikedSongs)
 
 }
