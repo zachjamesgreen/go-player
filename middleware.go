@@ -49,21 +49,3 @@ func auth(next http.Handler) http.Handler {
 		next.ServeHTTP(w, r)
 	})
 }
-
-// func checkCredentials() {
-// 	u, p, ok := r.BasicAuth()
-// 	log.Print(p)
-// 	user := models.GetUserByUsername()
-// 	if !ok {
-// 		http.Error(w, "Forbidden", http.StatusForbidden)
-// 		return
-// 	}
-// 	if u != user.Username {
-// 		http.Error(w, "Forbidden", http.StatusUnauthorized)
-// 		return
-// 	}
-// 	if bcrypt.CompareHashAndPassword(p) {
-
-// 	}
-
-// }

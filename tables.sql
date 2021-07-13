@@ -85,3 +85,12 @@ INSERT INTO songs (id,title,track,comment,album_id,artist_id,genre,path,year) VA
 -- select s.id, s.title, s.track, s.comment, s.year, s.last_played, s.path, s.album_id, s.artist_id, s.duration, s.created_at, al.title as album_title, ar.name from songs as s
 -- full join albums as al on s.album_id = al.id
 -- full join artists as ar on s.artist_id = ar.id;
+
+CREATE TABLE liked_songs (
+    id integer NOT NULL,
+    song_id integer NOT NULL,
+    date_added timestamp NOT NULL
+);
+
+select s.*, ls.date_added as added_to_ls from songs as s join liked_songs as ls on ls.song_id = s.id;
+ALTER TABLE liked_songs ADD CONSTRAINT liked_songs_song_id_fkey FOREIGN KEY (song_id) REFERENCES songs(id);

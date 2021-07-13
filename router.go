@@ -1,8 +1,9 @@
 package main
 
 import (
-	"github.com/gorilla/mux"
 	. "music/controllers"
+
+	"github.com/gorilla/mux"
 )
 
 func mount(r *mux.Router) {
@@ -34,4 +35,12 @@ func mount(r *mux.Router) {
 	// -----------
 	r.HandleFunc("/users", CreateUser).Methods("POST")
 	r.HandleFunc("/users/{id}", GetUserById)
+
+	//------------------
+	// Liked Songs Route
+	//------------------
+	r.HandleFunc("/liked/{id}/remove", UnlikeSong)
+	r.HandleFunc("/liked/{id}", LikeSong).Methods("POST")
+	r.HandleFunc("/liked", GetLikedSongs)
+
 }
