@@ -10,12 +10,12 @@ import (
 
 type LikedSong struct {
 	ID        int       `json:"id"`
-	Song      *Song     `json:"song"`
+	Song      Song      `json:"song"`
 	DateAdded time.Time `json:"date_added"`
 }
 
 func (ls *LikedSong) All() (lss []LikedSong, err error) {
-	ls.Song = &Song{}
+	ls.Song = Song{}
 	sqlStatment := `
 	SELECT s.id, s.title, s.track, 
 				s.comment, s.year, s.last_played, 
