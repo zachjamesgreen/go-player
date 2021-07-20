@@ -23,6 +23,8 @@ type Song struct {
 	Genre      Genre        `json:"genre"`
 	Duration   uint64       `json:"duration"`
 	CreatedAt  time.Time    `json:"created_at"`
+	Liked      bool         `json:"liked"`
+	LikedDate  time.Time    `json:"liked_date"`
 }
 
 type Genre struct {
@@ -72,4 +74,55 @@ func GetSongs() []Song {
 		songs = append(songs, song)
 	}
 	return songs
+}
+
+func GetLikedSongs() (songs []Song, err error) {
+	song := Song{}
+	sqlStatment := `
+	SELECT s.id, s.title, s.track, 
+				s.comment, s.year, s.last_played, 
+				s.path, s.genre, s.album_id, 
+				s.artist_id, s.created_at, s.duration, 
+				s.liked, s.liked_date, al.title, ar.name
+	FROM songs AS s
+	JOIN albums AS al ON s.album_id = al.id
+	JOIN artists AS ar ON s.artist_id = ar.id
+	WHERE s.liked = true
+	ORDER BY s.liked_date;`
+	rows, err := db.DB.Query(sqlStatment)
+	if err != nil {
+		if err == sql.ErrNoRows {
+			fmt.Println("Zero rows")
+		} else {
+			panic(err)
+		}
+	}
+	defer rows.Close()
+	for rows.Next() {
+		err := rows.Scan(
+			&song.Id, &song.Title, &song.Track,
+			&song.Comment, &song.Year, &song.LastPlayed,
+			&song.Path, &song.Genre.Name, &song.AlbumId,
+			&song.ArtistId, &song.CreatedAt, &song.Duration,
+			&song.Liked, &song.LikedDate, &song.Album, &song.Artist)
+		if err != nil {
+			log.Fatal(err)
+		}
+		songs = append(songs, song)
+	}
+	return
+}
+
+func AddLike(id int) (err error) {
+	sqlStatment := `
+	UPDATE songs set liked = true WHERE id = $1`
+	_, err = db.DB.Exec(sqlStatment, id)
+	return
+}
+
+func RemoveLike(id int) (err error) {
+	sqlStatment := `
+	UPDATE songs set liked = false, liked_date = NULL WHERE id = $1`
+	_, err = db.DB.Exec(sqlStatment, id)
+	return
 }

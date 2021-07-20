@@ -24,6 +24,9 @@ func mount(r *mux.Router) {
 	// Song Routes
 	// -----------
 	r.HandleFunc("/songs", GetSongs)
+	r.HandleFunc("/songs/liked/{id}", LikeSong)
+	r.HandleFunc("/songs/liked", GetLikedSongs)
+	r.HandleFunc("/songs/liked/{id}/remove", UnlikeSong)
 
 	// ------------
 	// Upload Route
@@ -39,8 +42,8 @@ func mount(r *mux.Router) {
 	//------------------
 	// Liked Songs Route
 	//------------------
-	r.HandleFunc("/liked/{id}/remove", UnlikeSong)
-	r.HandleFunc("/liked/{id}", LikeSong)
-	r.HandleFunc("/liked", GetLikedSongs)
+	// r.HandleFunc("/liked/{id}/remove", UnlikeSong)
+	// r.HandleFunc("/liked/{id}", LikeSong)
+	// r.HandleFunc("/liked", GetLikedSongs)
 
 }
