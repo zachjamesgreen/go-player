@@ -115,14 +115,14 @@ func GetLikedSongs() (songs []Song, err error) {
 
 func AddLike(id int) (err error) {
 	sqlStatment := `
-	UPDATE songs set liked = true WHERE id = $1`
-	_, err = db.DB.Exec(sqlStatment, id)
+	UPDATE songs set liked = true, liked_date = $1 WHERE id = $2 and liked = false`
+	_, err = db.DB.Exec(sqlStatment, time.Now(), id)
 	return
 }
 
 func RemoveLike(id int) (err error) {
 	sqlStatment := `
-	UPDATE songs set liked = false, liked_date = NULL WHERE id = $1`
+	UPDATE songs set liked = false, liked_date = NULL WHERE id = $1 and liked = true`
 	_, err = db.DB.Exec(sqlStatment, id)
 	return
 }
