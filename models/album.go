@@ -73,7 +73,11 @@ func GetAlbum(id int) (album Album) {
 func GetAlbumSongs(id int) (songs []Song) {
 	var song Song
 	sqlStatment := `
-	SELECT s.id, s.title, s.track, s.comment, s.year, s.last_played, s.path, s.genre, s.album_id, s.artist_id, s.created_at, al.title as album_title, ar.name
+	SELECT s.id, s.title, s.track,
+	s.comment, s.year, s.last_played,
+	s.path, s.genre, s.album_id,
+	s.artist_id, s.created_at, al.title,
+	ar.name, s.liked, s.liked_date
 	FROM songs AS s 
 	JOIN albums AS al ON s.album_id = al.id 
 	JOIN artists AS ar ON s.artist_id = ar.id 
@@ -90,7 +94,12 @@ func GetAlbumSongs(id int) (songs []Song) {
 	defer rows.Close()
 	for rows.Next() {
 		// err := rows.Scan(&song.Id, &song.Title, &song.Track, &song.Comment, &song.AlbumId, &song.ArtistId, &song.Genre.Name, &song.Path)
-		err := rows.Scan(&song.Id, &song.Title, &song.Track, &song.Comment, &song.Year, &song.LastPlayed, &song.Path, &song.Genre.Name, &song.AlbumId, &song.ArtistId, &song.CreatedAt, &song.Album, &song.Artist)
+		err := rows.Scan(
+			&song.Id, &song.Title, &song.Track,
+			&song.Comment, &song.Year, &song.LastPlayed,
+			&song.Path, &song.Genre.Name, &song.AlbumId,
+			&song.ArtistId, &song.CreatedAt, &song.Album,
+			&song.Artist, &song.Liked, &song.LikedDate)
 		if err != nil {
 			log.Fatal(err)
 		}
