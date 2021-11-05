@@ -118,6 +118,7 @@ func checkToken() {
 	req.SetBasicAuth(os.Getenv("SPOTIFY_CLIENT_ID"), os.Getenv("SPOTIFY_CLIENT_SECRET"))
 	req.Header.Add("Content-Type", "application/x-www-form-urlencoded")
 	req.Header.Add("Accept", "application/json")
+	log.Println("REQUEST", req)
 
 	res, err := http.DefaultClient.Do(req)
 	if err != nil {
