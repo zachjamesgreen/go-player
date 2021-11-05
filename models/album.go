@@ -79,7 +79,7 @@ func GetAlbum(id int) (album Album) {
 }
 
 func GetAlbumSongs(album_id int) (songs []Song) {
-	err := db.DB.Where("album_id = ?", album_id).Order("track asc").Find(&songs).Error
+	err := db.DB.Where("album_id = ?", album_id).Preload("Album").Preload("Artist").Order("track asc").Find(&songs).Error
 	if err != nil {
 		if err == gorm.ErrRecordNotFound {
 			fmt.Println("ErrRecordNotFound")

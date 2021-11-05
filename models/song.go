@@ -57,7 +57,7 @@ func (song *Song) Save() {
 }
 
 func GetSongs() (songs []Song) {
-	err := db.DB.Find(&songs).Error
+	err := db.DB.Preload("Artist").Preload("Album").Find(&songs).Error
 	if err != nil {
 		if err == gorm.ErrRecordNotFound {
 			fmt.Println("ErrRecordNotFound")
