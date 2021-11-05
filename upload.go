@@ -132,7 +132,7 @@ func checkToken() {
 		log.Panicf("Error unmarshalling response: %v", err)
 	}
 	token.Expires = time.Now().Add(time.Duration(token.ExpiresIn) * time.Second)
-	log.Println("Got Token")
+	log.Println("Got Token", token)
 }
 
 func getSpotifyAlbumArt(album models.Album, artist models.Artist) SpotifyAlbumInfo {
@@ -154,6 +154,9 @@ func getSpotifyAlbumArt(album models.Album, artist models.Artist) SpotifyAlbumIn
 	res, err := http.DefaultClient.Do(req)
 	if err != nil {
 		log.Panicf("Error sending request: %v", err)
+	}
+	if res.StatusCode != 200 {
+		log.Panicf("Error: %v", res.StatusCode)
 	}
 	defer res.Body.Close()
 
