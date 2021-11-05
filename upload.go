@@ -120,6 +120,12 @@ func checkToken() {
 	req.Header.Add("Accept", "application/json")
 
 	res, err := http.DefaultClient.Do(req)
+	if err != nil {
+		log.Panicf("Error sending request: %v", err)
+	}
+	if res.StatusCode != 200 {
+		log.Panicf("Error: %v", res)
+	}
 	defer res.Body.Close()
 
 	resBody, err := ioutil.ReadAll(res.Body)
@@ -156,7 +162,7 @@ func getSpotifyAlbumArt(album models.Album, artist models.Artist) SpotifyAlbumIn
 		log.Panicf("Error sending request: %v", err)
 	}
 	if res.StatusCode != 200 {
-		log.Panicf("Error: %v", res.StatusCode)
+		log.Panicf("Error: %v", res)
 	}
 	defer res.Body.Close()
 
