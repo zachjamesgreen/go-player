@@ -167,9 +167,7 @@ func getSpotifyAlbumArt(album models.Album, artist models.Artist) SpotifyAlbumIn
 		log.Panicf("Error unmarshalling response: %v", err)
 	}
 	for _, sAlbum := range body.(map[string]interface{})["albums"].(map[string]interface{})["items"].([]interface{}) {
-		log.Println("ALBUMNAME>>>", sAlbum.(map[string]interface{})["name"].(string))
 		albumInfo.AlbumName = sAlbum.(map[string]interface{})["name"].(string)
-		log.Println("ALBUMLINK>>>", sAlbum.(map[string]interface{})["external_urls"].(map[string]interface{})["spotify"].(string))
 		albumInfo.AlbumLink = sAlbum.(map[string]interface{})["external_urls"].(map[string]interface{})["spotify"].(string)
 		albumInfo.ID = sAlbum.(map[string]interface{})["id"].(string)
 		str, err := json.Marshal(sAlbum.(map[string]interface{})["images"])
