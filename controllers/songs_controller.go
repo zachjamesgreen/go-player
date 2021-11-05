@@ -16,8 +16,7 @@ func GetSongs(w http.ResponseWriter, req *http.Request) {
 
 func GetLikedSongs(w http.ResponseWriter, req *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
-	songs, err := models.GetLikedSongs()
-	check(err)
+	songs := models.GetLikedSongs()
 	json.NewEncoder(w).Encode(songs)
 }
 

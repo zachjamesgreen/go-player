@@ -1,8 +1,6 @@
 package models
 
 import (
-	"database/sql"
-	"fmt"
 	db "music/database"
 	"time"
 
@@ -10,56 +8,43 @@ import (
 )
 
 type User struct {
-	Id        int    `json:"id"`
-	Username  string `json:"username"`
+	Id        int
+	Username  string
 	Password  string
-	CreatedAt time.Time   `json:"created_at"`
-	UpdatedAt time.Time `json:"updated_at"`
+	CreatedAt time.Time
+	UpdatedAt time.Time
 }
 
 func GetUserById(id int) (user User) {
-	sqlStatment := `SELECT id,username,created_at,updated_at FROM users WHERE id = $1 LIMIT 1`
-	row := db.DB.QueryRow(sqlStatment, id)
-	err := row.Scan(&user.Id, &user.Username, &user.CreatedAt, &user.UpdatedAt)
+	err := db.DB.Find(&user, id).Error
 	if err != nil {
-		if err == sql.ErrNoRows {
-			fmt.Println("Zero rows")
-		} else {
-			panic(err)
-		}
+		panic(err)
 	}
 	return
 }
 
 func GetUserByUsername(username string) (user User) {
-	sqlStatment := `SELECT id,username,password,created_at,updated_at FROM users WHERE username = $1`
-	row := db.DB.QueryRow(sqlStatment, username)
-	err := row.Scan(&user.Id, &user.Username, &user.Password, &user.CreatedAt, &user.UpdatedAt)
+	err := db.DB.Where("username = ?", username).Find(&user).Error
 	if err != nil {
-		if err == sql.ErrNoRows {
-			fmt.Println("Zero rows")
-		} else {
-			panic(err)
-		}
+		panic(err)
 	}
 	return
 }
 
-func CreateUser(username string, password string) (id int, err error) {
+func CreateUser(username string, password string) (user User, err error) {
 	hashedPassword, err := hashPassword(password)
 	if err != nil {
-		return id, err
+		return user, err
 	}
-	sqlStatment := `INSERT INTO users (username, password, created_at, updated_at) VALUES ($1,$2,$3,$4) RETURNING id`
-	time := time.Now()
-	row := db.DB.QueryRow(sqlStatment, username, hashedPassword, time, time)
-	err = row.Scan(&id)
+	user = User{
+		Username:  username,
+		Password:  hashedPassword,
+		CreatedAt: time.Now(),
+		UpdatedAt: time.Now(),
+	}
+	err = db.DB.Create(&user).Error
 	if err != nil {
-		if err == sql.ErrNoRows {
-			fmt.Println("Zero rows")
-		} else {
-			panic(err)
-		}
+		panic(err)
 	}
 	return
 }

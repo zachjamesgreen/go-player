@@ -1,22 +1,21 @@
 package database
 
 import (
-	"database/sql"
 	"fmt"
 	"os"
 
-	_ "github.com/lib/pq"
+	"gorm.io/driver/postgres"
+	"gorm.io/gorm"
 )
 
-var DB *sql.DB
+var DB *gorm.DB
 
 func Start() {
 	// Turn on ssl mode on macos
-	connStr := fmt.Sprintf("host=%s user=%s dbname=musicplayer sslmode=disable", os.Getenv("DB_HOST"), os.Getenv("DB_USERNAME"))
-	db, err := sql.Open("postgres", connStr)
+	connStr := fmt.Sprintf("host=%s user=%s dbname=musicplayer", os.Getenv("DB_HOST"), os.Getenv("DB_USERNAME"))
+	db, err := gorm.Open(postgres.Open(connStr), &gorm.Config{})
 	if err != nil {
 		panic(err)
 	}
 	DB = db
-	return
 }

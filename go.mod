@@ -7,6 +7,9 @@ require (
 	github.com/gorilla/mux v1.8.0
 	github.com/lib/pq v1.10.2
 	github.com/stretchr/testify v1.7.0
-	golang.org/x/crypto v0.0.0-20210616213533-5ff15b29337e
+	golang.org/x/crypto v0.0.0-20210921155107-089bfa567519
 	gopkg.in/vansante/go-ffprobe.v2 v2.0.3
+	gorm.io/datatypes v1.0.3 // indirect
+	gorm.io/driver/postgres v1.2.1 // indirect
+	gorm.io/gorm v1.22.2 // indirect
 )
