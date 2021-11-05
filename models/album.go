@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	db "music/database"
+	"strconv"
 )
 
 type Album struct {
@@ -13,16 +14,44 @@ type Album struct {
 	ArtistId int    `json:"artist_id"`
 	Image    bool   `json:"image"`
 	Artist   string `json:"artist"`
+	SpotifyId string `json:"spotify_id"`
+	SpotifyLink string `json:"spotify_link"`
+	Images string `json:"images"`
 }
 
 func (album Album) Create(artist_id string) (album_id string, err error) {
 	err = nil
 	album.Image = false
 	sql := `
-	INSERT INTO albums (title, artist_id, image) 
-	VALUES ($1, $2, $3) ON CONFLICT (title, artist_id) DO UPDATE SET title=EXCLUDED.title 
+	INSERT INTO albums (title, artist_id, image, spotify_id, spotify_link, images) 
+	VALUES ($1, $2, $3, $4, $5, $6) ON CONFLICT (title, artist_id) DO UPDATE SET title=EXCLUDED.title
 	returning id`
-	db.DB.QueryRow(sql, album.Title, artist_id, album.Image).Scan(&album_id)
+	err = db.DB.QueryRow(sql, album.Title, artist_id, album.Image, album.SpotifyId, album.SpotifyLink, album.Images).Scan(&album_id)
+	return
+}
+
+func (album Album) Update(id string) (album_id string, err error) {
+	sql := `
+	UPDATE albums SET title=$1, image=$2, spotify_id=$3, spotify_link=$4, images=$5
+	WHERE id=$6 RETURNING id`
+	_, err = db.DB.Exec(sql, album.Title, album.Image, album.SpotifyId, album.SpotifyLink, album.Images, id) //.Scan(&album_id)
+	return
+}
+
+func (album Album) Upsert(id string) (album_id string, err error) {
+	sql := `SELECT id FROM albums WHERE id = $1`
+	err = db.DB.QueryRow(sql, id).Scan(&album_id)
+	if err != nil {
+		log.Fatal(err)
+	}
+	if true {
+		log.Println("Updating Album")
+		album_id, err = album.Update(id)
+	} else {
+		log.Println("Creating Album")
+		albumStrId := strconv.Itoa(album.ArtistId)
+		album_id, err = album.Create(albumStrId)
+	}
 	return
 }
 
@@ -43,7 +72,7 @@ func GetAlbums() (albums []Album) {
 	}
 	defer rows.Close()
 	for rows.Next() {
-		err := rows.Scan(&album.Id, &album.Title, &album.ArtistId, &album.Image, &album.Artist)
+		err := rows.Scan(&album.Id, &album.Title, &album.ArtistId, &album.Image, &album.SpotifyId, &album.SpotifyLink, &album.Images, &album.Artist)
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -59,7 +88,7 @@ func GetAlbum(id int) (album Album) {
 	JOIN artists on albums.artist_id = artists.id 
 	WHERE albums.id = $1`
 	row := db.DB.QueryRow(sqlStatment, id)
-	err := row.Scan(&album.Id, &album.Title, &album.ArtistId, &album.Image, &album.Artist)
+	err := row.Scan(&album.Id, &album.Title, &album.ArtistId, &album.Image, &album.Artist, &album.SpotifyId, &album.SpotifyLink, &album.Images)
 	if err != nil {
 		if err == sql.ErrNoRows {
 			fmt.Println("Zero rows")
