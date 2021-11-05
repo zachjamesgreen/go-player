@@ -124,7 +124,7 @@ func checkToken() {
 		log.Panicf("Error sending request: %v", err)
 	}
 	if res.StatusCode != 200 {
-		log.Panicf("Error: %v", res)
+		log.Panicf("Error: %v", res.Body)
 	}
 	defer res.Body.Close()
 
@@ -162,7 +162,7 @@ func getSpotifyAlbumArt(album models.Album, artist models.Artist) SpotifyAlbumIn
 		log.Panicf("Error sending request: %v", err)
 	}
 	if res.StatusCode != 200 {
-		log.Panicf("Error: %v", res)
+		log.Panicf("Error: %v", res.Body)
 	}
 	defer res.Body.Close()
 
