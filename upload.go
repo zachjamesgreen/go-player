@@ -138,6 +138,7 @@ func checkToken() {
 }
 
 func getSpotifyAlbumArt(album models.Album, artist models.Artist) SpotifyAlbumInfo {
+	var albumInfo SpotifyAlbumInfo
 	checkToken()
 
 	parm := url.Values{}
@@ -167,7 +168,6 @@ func getSpotifyAlbumArt(album models.Album, artist models.Artist) SpotifyAlbumIn
 	if err != nil {
 		log.Panicf("Error unmarshalling response: %v", err)
 	}
-	var albumInfo SpotifyAlbumInfo
 	for _, sAlbum := range body.(map[string]interface{})["albums"].(map[string]interface{})["items"].([]interface{}) {
 		albumInfo.AlbumName = sAlbum.(map[string]interface{})["name"].(string)
 		albumInfo.AlbumLink = sAlbum.(map[string]interface{})["external_urls"].(map[string]interface{})["spotify"].(string)
