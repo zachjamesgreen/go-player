@@ -35,3 +35,13 @@ func UnlikeSong(w http.ResponseWriter, req *http.Request) {
 	check(err)
 	json.NewEncoder(w).Encode(models.RemoveLike(id))
 }
+
+func DeleteSong(w http.ResponseWriter, req *http.Request) {
+	// w.Header().Set("Content-Type", "application/json")
+	vars := mux.Vars(req)
+	id, err := strconv.Atoi(vars["id"])
+	check(err)
+	song := models.GetSong(id)
+	song.Delete()
+	// json.NewEncoder(w).Encode()
+}

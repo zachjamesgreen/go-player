@@ -87,3 +87,23 @@ func GetArtistAlbums(artist_id int) (albums []Album) {
 	}
 	return
 }
+
+func (artist Artist) Delete() {
+	var err error
+	// TODO: figure out has many through
+	var albums []Album
+	err = db.DB.Where("artist_id = ?", artist.ID).Find(&albums).Error
+	if err != nil {
+		panic(err)
+	}
+	if len(albums) > 0 {
+		err = db.DB.Select("Songs").Where("").Delete(&albums).Error
+		if err != nil {
+			panic(err)
+		}
+	}
+	err = db.DB.Delete(&artist).Error
+	if err != nil {
+		panic(err)
+	}
+}

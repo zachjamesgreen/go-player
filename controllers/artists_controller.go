@@ -37,3 +37,12 @@ func GetArtistAlbums(w http.ResponseWriter, req *http.Request) {
 	check(err)
 	json.NewEncoder(w).Encode(models.GetArtistAlbums(id))
 }
+
+func DeleteArtist(w http.ResponseWriter, req *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+	vars := mux.Vars(req)
+	id, err := strconv.Atoi(vars["id"])
+	check(err)
+	artist := models.GetArtist(id)
+	artist.Delete()
+}

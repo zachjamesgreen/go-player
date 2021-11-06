@@ -89,3 +89,10 @@ func GetAlbumSongs(album_id int) (songs []Song) {
 	}
 	return
 }
+
+func (album Album) Delete() {
+	err := db.DB.Select("Songs").Delete(&album).Error
+	if err != nil {
+		panic(err)
+	}
+}

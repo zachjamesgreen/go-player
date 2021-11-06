@@ -11,6 +11,7 @@ func mount(r *mux.Router) {
 	// Artists Routes
 	// --------------
 	r.HandleFunc("/artists", GetArtists)
+	r.HandleFunc("/artists/{id}", DeleteArtist).Methods("DELETE")
 	r.HandleFunc("/artists/{id}", GetArtist)
 	r.HandleFunc("/artists/{id}/songs", GetArtistSongs)
 	r.HandleFunc("/artists/{id}/albums", GetArtistAlbums)
@@ -18,6 +19,7 @@ func mount(r *mux.Router) {
 	// Album Routes
 	// ------------
 	r.HandleFunc("/albums", GetAlbums)
+	r.HandleFunc("/albums/{id}", DeleteAlbum).Methods("DELETE")
 	r.HandleFunc("/albums/{id}", GetAlbum)
 	r.HandleFunc("/albums/{id}/songs", GetAlbumSongs)
 	// -----------
@@ -27,6 +29,7 @@ func mount(r *mux.Router) {
 	r.HandleFunc("/songs/liked/{id}", LikeSong)
 	r.HandleFunc("/songs/liked", GetLikedSongs)
 	r.HandleFunc("/songs/liked/{id}/remove", UnlikeSong)
+	r.HandleFunc("/songs/{id}", DeleteSong).Methods("DELETE")
 
 	// ------------
 	// Upload Route

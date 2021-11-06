@@ -57,8 +57,27 @@ func (song *Song) Save() {
 	}
 }
 
+func (song Song) Delete() {
+	err := db.DB.Delete(&song).Error
+	if err != nil {
+		panic(err)
+	}
+}
+
 func GetSongs() (songs []Song) {
 	err := db.DB.Preload("Artist").Preload("Album").Find(&songs).Error
+	if err != nil {
+		if err == gorm.ErrRecordNotFound {
+			fmt.Println("ErrRecordNotFound")
+		} else {
+			panic(err)
+		}
+	}
+	return
+}
+
+func GetSong(id int) (song Song) {
+	err := db.DB.First(&song, id).Error
 	if err != nil {
 		if err == gorm.ErrRecordNotFound {
 			fmt.Println("ErrRecordNotFound")
