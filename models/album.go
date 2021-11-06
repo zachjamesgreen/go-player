@@ -55,7 +55,7 @@ func (album *Album) Save() {
 
 func GetAlbums() (albums []Album) {
 	log.Println("Getting Albums")
-	err := db.DB.Find(&albums).Error
+	err := db.DB.Preload("Artist").Find(&albums).Error
 	if err != nil {
 		if err == gorm.ErrRecordNotFound {
 			fmt.Println("Zero rows")

@@ -34,7 +34,10 @@ type Token struct {
 var token Token
 
 func UploadHandler(w http.ResponseWriter, req *http.Request) {
-	req.ParseMultipartForm(32 << 20)
+	err := req.ParseMultipartForm(32 << 20)
+	if err != nil {
+		log.Panicf("Error parsing multipart form: %v", err)
+	}
 	if files, ok := req.MultipartForm.File["song"]; ok {
 		for _, fileHeader := range files {
 			// if fileHeader.Header["Content-Type"][0] != "audio/mpeg" {
