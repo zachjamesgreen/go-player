@@ -10,7 +10,6 @@ import (
 	db "music/database"
 
 	"github.com/gorilla/mux"
-	"github.com/gorilla/handlers"
 )
 
 func check(err error) {
@@ -38,9 +37,7 @@ func main() {
 	mount(Router)
 	http.Handle("/", Router)
 	Router.Use(auth)
-	// Router.Use(setHeaders)
-	handlers.AllowOrigins([][]string{"*"})
-	handlers.AllowMethods([][]string{"GET", "POST", "DELETE", "OPTIONS"})
+	Router.Use(setHeaders)
 	Router.Use(loggingMiddleware)
 	log.Println("Starting Server")
 	fmt.Println("Starting Server")
