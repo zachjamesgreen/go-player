@@ -34,7 +34,6 @@ type Token struct {
 var token Token
 
 func UploadHandler(w http.ResponseWriter, req *http.Request) {
-	log.Println("Token", token)
 	req.ParseMultipartForm(32 << 20)
 	if files, ok := req.MultipartForm.File["song"]; ok {
 		for _, fileHeader := range files {
@@ -121,7 +120,7 @@ func checkToken() {
 		log.Panicf("Error unmarshalling response: %v", err)
 	}
 	token.Expires = time.Now().Add(time.Duration(token.ExpiresIn) * time.Second)
-	log.Println("Got Token", token)
+	log.Println("Got Token")
 }
 
 func getSpotifyAlbumArt(album *models.Album, artist models.Artist) {

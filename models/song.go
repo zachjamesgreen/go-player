@@ -26,6 +26,7 @@ type Song struct {
 	LikedDate  time.Time
 	Artist     Artist
 	Album      Album
+	// Plays 		int
 }
 
 func (s Song) String() string {
