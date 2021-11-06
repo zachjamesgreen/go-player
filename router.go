@@ -31,7 +31,7 @@ func mount(r *mux.Router) {
 	// ------------
 	// Upload Route
 	// ------------
-	r.HandleFunc("/upload", UploadHandler).Methods("POST")
+	r.HandleFunc("/upload", UploadHandler) //.Methods("POST")
 
 	// -----------
 	// User Routes
