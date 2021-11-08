@@ -9,16 +9,15 @@ on:
 jobs:
   runner-job:
     runs-on: ubuntu-latest
-    services:
-      postgres:
-        image: postgres
-        env: 
-          POSTGRES_PASSWORD: ''
+    # services:
+    #   postgres:
+    #     image: postgres
+    #     env: 
+    #       POSTGRES_PASSWORD: ''
 
     steps:
       - name: Check out repository code
         uses: actions/checkout@v2
-
 
       - name: Set up Go
         uses: actions/setup-go@v2
