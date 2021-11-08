@@ -1,7 +1,6 @@
 package models
 
 import (
-	// "fmt"
 	. "github.com/stretchr/testify/assert"
 	"music/database"
 	"testing"
@@ -115,10 +114,46 @@ func TestGetArtistById(t *testing.T) {
 	Equal(t, "Test", artist.Name)
 }
 
+func TestGetArtistAlbumsById(t *testing.T) {
+	artist := Artist{
+		Name: "Test",
+	}
+
+	albums := []Album{
+		{
+			Title: "Test1",
+		},
+		{
+			Title: "Test2",
+		},
+		{
+			Title: "Test3",
+		},
+	}
+
+	database.GetTestDB(false)
+	defer database.CleanTestDB()
+
+	err := artist.FirstOrCreate()
+	NoError(t, err)
+
+	for _, album := range albums {
+		album.Artist = artist
+		album.Upsert()
+		NoError(t, err)
+	}
+
+	artistAlbums, err := GetArtistAlbumsById(artist.ID)
+	NoError(t, err)
+	Equal(t, 3, len(artistAlbums))
+}
+
 // func TestGetArtistSongsById(t *testing.T) {
 // 	artist := Artist{
 // 		Name: "Test",
 // 	}
+
+
 // 	database.GetTestDB(false)
 // 	defer database.CleanTestDB()
 
@@ -130,10 +165,3 @@ func TestGetArtistById(t *testing.T) {
 // 	Equal(t, 0, len(songs))
 // }
 
-// func TestGetArtistAlbumsById(t *testing.T) {
-// 	artist := Artist{
-// 		Name: "Test",
-// 	}
-// 	database.GetTestDB(false)
-// 	defer database.CleanTestDB()
-// }

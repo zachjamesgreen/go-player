@@ -31,6 +31,8 @@ func GetTestDB(fixtures bool) *gorm.DB {
 }
 
 func CleanTestDB() {
+	DB.Exec("DELETE FROM songs")
+	DB.Exec("DELETE FROM albums")
 	DB.Exec("DELETE FROM artists")
 }
 

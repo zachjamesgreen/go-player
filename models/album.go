@@ -28,7 +28,6 @@ func (a Album) String() string {
 }
 
 func (album *Album) Upsert() (err error) {
-	fmt.Println(album)
 	err = db.DB.Where(Album{Title: album.Title}).FirstOrInit(&album).Error
 	if err != nil {
 		return err
@@ -42,15 +41,16 @@ func (album *Album) Upsert() (err error) {
 	return nil
 }
 
-func (album *Album) Save() {
-	err := db.DB.Save(&album).Error
+func (album *Album) Save() (err error) {
+	err = db.DB.Save(&album).Error
 	if err != nil {
 		if err == gorm.ErrRecordNotFound {
 			fmt.Println("ErrRecordNotFound")
 		} else {
-			panic(err)
+			return
 		}
 	}
+	return
 }
 
 func GetAlbums() (albums []Album) {
