@@ -20,12 +20,9 @@ jobs:
 
     - name: Set Up ENV
       run: export DB_USERNAME=postgres
-      run: export 
 
     - name: Set Up Database
-      run: apt-get update
-      run: apt-get install
-      run: apt-get -y install postgresql
+      run: apt-get update && apt-get -y install postgresql
 
     - name: Build
       run: go build -v ./...
