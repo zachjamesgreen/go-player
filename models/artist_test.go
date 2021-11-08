@@ -122,12 +122,15 @@ func TestGetArtistAlbumsById(t *testing.T) {
 	albums := []Album{
 		{
 			Title: "Test1",
+			Artist: &artist,
 		},
 		{
 			Title: "Test2",
+			Artist: &artist,
 		},
 		{
 			Title: "Test3",
+			Artist: &artist,
 		},
 	}
 
@@ -138,7 +141,6 @@ func TestGetArtistAlbumsById(t *testing.T) {
 	NoError(t, err)
 
 	for _, album := range albums {
-		album.Artist = artist
 		album.Upsert()
 		NoError(t, err)
 	}
@@ -148,20 +150,46 @@ func TestGetArtistAlbumsById(t *testing.T) {
 	Equal(t, 3, len(artistAlbums))
 }
 
-// func TestGetArtistSongsById(t *testing.T) {
-// 	artist := Artist{
-// 		Name: "Test",
-// 	}
+func TestGetArtistSongsById(t *testing.T) {
+	artist := Artist{
+		Name: "Test",
+	}
+	album := Album{
+		Title: "Test",
+		Artist: &artist,
+	}
+	songs := []Song{
+		{
+			Title: "Test1",
+			Album: &album,
+			Artist: &artist,
+		},
+		{
+			Title: "Test2",
+			Album: &album,
+			Artist: &artist,
+		},
+		{
+			Title: "Test3",
+			Album: &album,
+			Artist: &artist,
+		},
+	}
 
 
-// 	database.GetTestDB(false)
-// 	defer database.CleanTestDB()
+	database.GetTestDB(false)
+	defer database.CleanTestDB()
 
-// 	err := artist.FirstOrCreate()
-// 	NoError(t, err)
+	err := artist.FirstOrCreate()
+	NoError(t, err)
+	err = album.Upsert()
+	for _, song := range songs {
+		song.Upsert()
+		NoError(t, err)
+	}
 
-// 	songs, err := GetArtistSongsById(artist.ID)
-// 	NoError(t, err)
-// 	Equal(t, 0, len(songs))
-// }
+	result, err := GetArtistSongsById(artist.ID)
+	NoError(t, err)
+	Equal(t, 3, len(result))
+}
 

@@ -24,8 +24,8 @@ type Song struct {
 	CreatedAt  time.Time
 	Liked      bool
 	LikedDate  time.Time
-	Artist     Artist
-	Album      Album
+	Artist     *Artist
+	Album      *Album
 	// Plays 		int
 }
 

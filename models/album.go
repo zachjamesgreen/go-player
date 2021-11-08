@@ -17,7 +17,7 @@ type Album struct {
 	SpotifyId   string
 	SpotifyLink string
 	Images      datatypes.JSON
-	Artist      Artist
+	Artist      *Artist
 	Songs       []Song
 }
 

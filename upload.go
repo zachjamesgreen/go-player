@@ -222,7 +222,7 @@ func getTagData(file multipart.File) (artist models.Artist, album models.Album, 
 		getSpotifyArtistArt(&artist)
 	}
 
-	album = models.Album{Title: data.Album(), Artist: artist}
+	album = models.Album{Title: data.Album(), Artist: &artist}
 	album.Upsert()
 	if album.SpotifyId == "" {
 		getSpotifyAlbumArt(&album, artist)
@@ -239,8 +239,8 @@ func getTagData(file multipart.File) (artist models.Artist, album models.Album, 
 		Track:   track,
 		Comment: data.Comment(),
 		Genre:   genreName,
-		Artist:  artist,
-		Album:   album,
+		Artist:  &artist,
+		Album:   &album,
 		Year:    data.Year(),
 	}
 	return
