@@ -21,8 +21,11 @@ jobs:
     - name: Set Up ENV
       run: export DB_USERNAME=postgres
 
-    - name: Set Up Database
+    - name: Install Database
       run: sudo apt-get update && sudo apt-get -y install postgresql
+
+    - name: Setup Database
+      run: ./script/refresh_database.sh
 
     - name: Build
       run: go build -v ./...
