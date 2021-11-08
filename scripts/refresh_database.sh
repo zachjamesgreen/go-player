@@ -1,6 +1,6 @@
 set -e
 
-psql -U $DB_USERNAME -v "ON_ERROR_STOP=on" << EOF
+psql -U $DB_USERNAME --set=ON_ERROR_STOP << EOF
 DROP DATABASE IF EXISTS musicplayer;
 DROP DATABASE IF EXISTS musicplayer_test;
 CREATE DATABASE musicplayer;
