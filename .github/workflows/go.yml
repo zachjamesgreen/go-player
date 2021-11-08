@@ -22,7 +22,7 @@ jobs:
       run: export DB_USERNAME=postgres
 
     - name: Set Up Database
-      run: apt-get update && apt-get -y install postgresql
+      run: sudo apt-get update && sudo apt-get -y install postgresql
 
     - name: Build
       run: go build -v ./...
