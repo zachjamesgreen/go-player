@@ -11,7 +11,12 @@ import (
 
 func GetArtists(w http.ResponseWriter, req *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(models.GetArtists())
+	artists, err := models.GetAllArtists()
+	if err != nil {
+		json.NewEncoder(w).Encode(err)
+		return
+	}
+	json.NewEncoder(w).Encode(artists)
 }
 
 func GetArtist(w http.ResponseWriter, req *http.Request) {
@@ -19,7 +24,12 @@ func GetArtist(w http.ResponseWriter, req *http.Request) {
 	vars := mux.Vars(req)
 	id, err := strconv.Atoi(vars["id"])
 	check(err)
-	json.NewEncoder(w).Encode(models.GetArtist(id))
+	artist, err := models.GetArtistById(id)
+	if err != nil {
+		json.NewEncoder(w).Encode(err)
+		return
+	}
+	json.NewEncoder(w).Encode(artist)
 }
 
 func GetArtistSongs(w http.ResponseWriter, req *http.Request) {
@@ -27,7 +37,12 @@ func GetArtistSongs(w http.ResponseWriter, req *http.Request) {
 	vars := mux.Vars(req)
 	id, err := strconv.Atoi(vars["id"])
 	check(err)
-	json.NewEncoder(w).Encode(models.GetArtistSongs(id))
+	songs, err := models.GetArtistSongsById(id)
+	if err != nil {
+		json.NewEncoder(w).Encode(err)
+		return
+	}
+	json.NewEncoder(w).Encode(songs)
 }
 
 func GetArtistAlbums(w http.ResponseWriter, req *http.Request) {
@@ -35,7 +50,12 @@ func GetArtistAlbums(w http.ResponseWriter, req *http.Request) {
 	vars := mux.Vars(req)
 	id, err := strconv.Atoi(vars["id"])
 	check(err)
-	json.NewEncoder(w).Encode(models.GetArtistAlbums(id))
+	albums, err := models.GetArtistAlbumsById(id)
+	if err != nil {
+		json.NewEncoder(w).Encode(err)
+		return
+	}
+	json.NewEncoder(w).Encode(albums)
 }
 
 func DeleteArtist(w http.ResponseWriter, req *http.Request) {
@@ -43,6 +63,13 @@ func DeleteArtist(w http.ResponseWriter, req *http.Request) {
 	vars := mux.Vars(req)
 	id, err := strconv.Atoi(vars["id"])
 	check(err)
-	artist := models.GetArtist(id)
-	artist.Delete()
+	artist, err := models.GetArtistById(id)
+	if err != nil {
+		json.NewEncoder(w).Encode(err)
+		return
+	}
+	if err = artist.Delete(); err != nil {
+		json.NewEncoder(w).Encode(err)
+		return
+	}
 }

@@ -2,7 +2,6 @@ package models
 
 import (
 	"fmt"
-	"log"
 	db "music/database"
 
 	"gorm.io/datatypes"
@@ -18,92 +17,89 @@ type Artist struct {
 }
 
 func (a Artist) String() string {
-	return fmt.Sprintf(
-		"Artist<ID: %+v | Name: %+v>\n", a.ID, a.Name)
+	return fmt.Sprintf("Artist<ID: %+v | Name: %+v>\n", a.ID, a.Name)
 }
 
-func (artist *Artist) Upsert() {
-	err := db.DB.FirstOrCreate(&artist, Artist{Name: artist.Name}).Error
+func (artist *Artist) FirstOrCreate() (err error) {
+	err = db.DB.FirstOrCreate(&artist, Artist{Name: artist.Name}).Error
 	if err != nil {
 		if err == gorm.ErrRecordNotFound {
 			fmt.Println("Zero rows")
 		} else {
-			panic(err)
-		}
-	}
-}
-
-func (artist *Artist) Save() {
-	err := db.DB.Save(&artist).Error
-	if err != nil {
-		panic(err)
-	}
-}
-
-func GetArtists() (artists []Artist) {
-	err := db.DB.Find(&artists).Error
-	if err != nil {
-		if err == gorm.ErrRecordNotFound {
-			fmt.Println("Zero rows")
-		} else {
-			panic(err)
+			return
 		}
 	}
 	return
 }
 
-func GetArtist(id int) (artist Artist) {
-	err := db.DB.Find(&artist, id).Error
+func (artist *Artist) Save() error{
+	return db.DB.Save(&artist).Error
+}
+
+func GetAllArtists() (artists []Artist, err error) {
+	err = db.DB.Find(&artists).Error
 	if err != nil {
 		if err == gorm.ErrRecordNotFound {
 			fmt.Println("Zero rows")
 		} else {
-			log.Fatal(err)
+			return nil, err
 		}
 	}
 	return
 }
 
-func GetArtistSongs(artist_id int) (songs []Song) {
-	err := db.DB.Where("artist_id = ?", artist_id).Preload("Artist").Preload("Album").Find(&songs).Error
+func GetArtistById(id int) (artist Artist, err error){
+	err = db.DB.Find(&artist, id).Error
+	if err != nil {
+		if err == gorm.ErrRecordNotFound {
+			fmt.Println("Zero rows")
+		} else {
+			return
+		}
+	}
+	return
+}
+
+func GetArtistSongsById(artist_id int) (songs []Song, err error) {
+	err = db.DB.Where("artist_id = ?", artist_id).Preload("Artist").Preload("Album").Find(&songs).Error
 	if err != nil {
 		if err == gorm.ErrRecordNotFound {
 			fmt.Println("Zero Rows")
 		} else {
-			panic(err)
+			return
 		}
 	}
 	return
 }
 
-func GetArtistAlbums(artist_id int) (albums []Album) {
-	err := db.DB.Where("artist_id = ?", artist_id).Preload("Artist").Find(&albums).Error
+func GetArtistAlbumsById(artist_id int) (albums []Album, err error) {
+	err = db.DB.Where("artist_id = ?", artist_id).Preload("Artist").Find(&albums).Error
 	if err != nil {
 		if err == gorm.ErrRecordNotFound {
 			fmt.Println("Zero Rows")
 		} else {
-			panic(err)
+			return
 		}
 	}
 	return
 }
 
-func (artist Artist) Delete() {
-	var err error
+func (artist Artist) Delete() (err error){
 	// TODO: figure out has many through
 	var albums []Album
 	err = db.DB.Where("artist_id = ?", artist.ID).Find(&albums).Error
 	if err != nil {
-		panic(err)
+		return
 	}
 	if len(albums) > 0 {
 		err = db.DB.Select("Songs").Where("").Delete(&albums).Error
 		if err != nil {
-			panic(err)
+			return
 		}
 	}
 	err = db.DB.Delete(&artist).Error
 	if err != nil {
-		panic(err)
+		return
 	}
+	return
 }

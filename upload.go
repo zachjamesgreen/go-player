@@ -217,7 +217,7 @@ func getTagData(file multipart.File) (artist models.Artist, album models.Album, 
 	check(err)
 
 	artist = models.Artist{Name: data.Artist()}
-	artist.Upsert()
+	artist.FirstOrCreate()
 	if artist.SpotifyId == "" {
 		getSpotifyArtistArt(&artist)
 	}

@@ -1,8 +1,6 @@
 package models
 
 import (
-	// "database/sql"
-
 	"fmt"
 	"log"
 	db "music/database"
@@ -29,17 +27,19 @@ func (a Album) String() string {
 		a.ID, a.Title, a.ArtistId, a.SpotifyId, a.SpotifyLink, a.Images)
 }
 
-func (album *Album) Upsert() {
-	err := db.DB.Where(Album{Title: album.Title}).FirstOrInit(&album).Error
+func (album *Album) Upsert() (err error) {
+	fmt.Println(album)
+	err = db.DB.Where(Album{Title: album.Title}).FirstOrInit(&album).Error
 	if err != nil {
-		panic(err)
+		return err
 	}
 	if album.ID == 0 {
 		err = db.DB.Create(&album).Error
 		if err != nil {
-			panic(err)
+			return err
 		}
 	}
+	return nil
 }
 
 func (album *Album) Save() {
