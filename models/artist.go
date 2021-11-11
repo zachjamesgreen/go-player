@@ -9,11 +9,11 @@ import (
 )
 
 type Artist struct {
-	ID            int
-	Name          string
-	Albums        []Album
-	SpotifyId     string
-	Images datatypes.JSON
+	ID        int
+	Name      string
+	Albums    []Album
+	SpotifyId string
+	Images    datatypes.JSON
 }
 
 func (a Artist) String() string {
@@ -21,43 +21,21 @@ func (a Artist) String() string {
 }
 
 func (artist *Artist) FirstOrCreate() (err error) {
-	err = db.DB.FirstOrCreate(&artist, Artist{Name: artist.Name}).Error
-	if err != nil {
-		if err == gorm.ErrRecordNotFound {
-			fmt.Println("Zero rows")
-		} else {
-			return
-		}
-	}
-	return
+	return db.DB.FirstOrCreate(&artist, Artist{Name: artist.Name}).Error
 }
 
-func (artist *Artist) Save() error{
+func (artist *Artist) Save() error {
 	return db.DB.Save(&artist).Error
 }
 
 func GetAllArtists() (artists []Artist, err error) {
 	err = db.DB.Find(&artists).Error
-	if err != nil {
-		if err == gorm.ErrRecordNotFound {
-			fmt.Println("Zero rows")
-		} else {
-			return nil, err
-		}
-	}
 	return
 }
 
-func GetArtistById(id int) (artist Artist, err error){
-	err = db.DB.Find(&artist, id).Error
-	if err != nil {
-		if err == gorm.ErrRecordNotFound {
-			fmt.Println("Zero rows")
-		} else {
-			return
-		}
-	}
-	return
+func GetArtistById(id int) (artist Artist, err error) {
+	result := db.DB.Find(&artist, id)
+	return artist, result.Error
 }
 
 func GetArtistSongsById(artist_id int) (songs []Song, err error) {
@@ -84,7 +62,7 @@ func GetArtistAlbumsById(artist_id int) (albums []Album, err error) {
 	return
 }
 
-func (artist Artist) Delete() (err error){
+func (artist Artist) Delete() (err error) {
 	// TODO: figure out has many through
 	var albums []Album
 	err = db.DB.Where("artist_id = ?", artist.ID).Find(&albums).Error

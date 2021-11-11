@@ -15,7 +15,16 @@ func TestArtistString(t *testing.T) {
 	Equal(t, expected, artist.String())
 }
 
-func TestUpsert(t *testing.T) {
+func TestFirstOrCreateError(t *testing.T) {
+	artist := Artist{}
+	database.GetTestDB(false)
+	defer database.CleanTestDB()
+
+	err := artist.FirstOrCreate()
+	Error(t, err)
+}
+
+func TestFirstOrCreate(t *testing.T) {
 	db := database.GetTestDB(false)
 	defer database.CleanTestDB()
 	var artist Artist
@@ -53,6 +62,11 @@ func TestSave(t *testing.T) {
 	NoError(t, result.Error)
 	Equal(t, expected, artist)
 	Equal(t, 2, artist.ID)
+
+	// error if name is changes to empty string
+	artist.Name = ""
+	err = artist.Save()
+	Error(t, err)
 }
 
 func TestDelete(t *testing.T) {
@@ -109,9 +123,9 @@ func TestGetArtistById(t *testing.T) {
 	err := artist.FirstOrCreate()
 	NoError(t, err)
 
-	artist, err = GetArtistById(artist.ID)
+	expected, err := GetArtistById(artist.ID)
 	NoError(t, err)
-	Equal(t, "Test", artist.Name)
+	Equal(t, "Test", expected.Name)
 }
 
 func TestGetArtistAlbumsById(t *testing.T) {

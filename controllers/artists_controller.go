@@ -25,6 +25,7 @@ func GetArtist(w http.ResponseWriter, req *http.Request) {
 	id, err := strconv.Atoi(vars["id"])
 	check(err)
 	artist, err := models.GetArtistById(id)
+	// handle artist not found. send 404
 	if err != nil {
 		json.NewEncoder(w).Encode(err)
 		return
@@ -38,6 +39,7 @@ func GetArtistSongs(w http.ResponseWriter, req *http.Request) {
 	id, err := strconv.Atoi(vars["id"])
 	check(err)
 	songs, err := models.GetArtistSongsById(id)
+	// handle artist not found. send 404
 	if err != nil {
 		json.NewEncoder(w).Encode(err)
 		return
@@ -51,6 +53,7 @@ func GetArtistAlbums(w http.ResponseWriter, req *http.Request) {
 	id, err := strconv.Atoi(vars["id"])
 	check(err)
 	albums, err := models.GetArtistAlbumsById(id)
+	// handle artist not found. send 404
 	if err != nil {
 		json.NewEncoder(w).Encode(err)
 		return
