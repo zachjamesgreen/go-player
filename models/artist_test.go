@@ -2,7 +2,7 @@ package models
 
 import (
 	. "github.com/stretchr/testify/assert"
-	"music/database"
+	"github.com/zachjamesgreen/go-player/database"
 	"testing"
 )
 

@@ -1,7 +1,7 @@
 package main
 
 import (
-	. "music/controllers"
+	. "github.com/zachjamesgreen/go-player/controllers"
 
 	"github.com/gorilla/mux"
 )

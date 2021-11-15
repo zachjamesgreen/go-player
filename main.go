@@ -7,7 +7,7 @@ import (
 
 	"net/http"
 
-	db "music/database"
+	db "github.com/zachjamesgreen/go-player/database"
 
 	"github.com/gorilla/mux"
 	"github.com/gorilla/handlers"

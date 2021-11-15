@@ -3,7 +3,7 @@ package models
 import (
 	"database/sql"
 	"fmt"
-	db "music/database"
+	db "github.com/zachjamesgreen/go-player/database"
 	"time"
 
 	"gorm.io/gorm"

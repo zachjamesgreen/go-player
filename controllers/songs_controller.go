@@ -2,7 +2,7 @@ package controllers
 
 import (
 	"encoding/json"
-	"music/models"
+	"github.com/zachjamesgreen/go-player/models"
 	"net/http"
 	"strconv"
 

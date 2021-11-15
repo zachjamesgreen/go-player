@@ -2,7 +2,7 @@ package main
 
 import (
 	"log"
-	"music/models"
+	"github.com/zachjamesgreen/go-player/models"
 	"net/http"
 	"golang.org/x/crypto/bcrypt"
 )

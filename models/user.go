@@ -1,7 +1,7 @@
 package models
 
 import (
-	db "music/database"
+	db "github.com/zachjamesgreen/go-player/database"
 	"time"
 
 	"golang.org/x/crypto/bcrypt"

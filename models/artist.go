@@ -2,7 +2,7 @@ package models
 
 import (
 	"fmt"
-	db "music/database"
+	db "github.com/zachjamesgreen/go-player/database"
 
 	"gorm.io/datatypes"
 	"gorm.io/gorm"

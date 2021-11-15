@@ -6,7 +6,7 @@ import (
 	"io/ioutil"
 	"log"
 	"mime/multipart"
-	"music/models"
+	"github.com/zachjamesgreen/go-player/models"
 	"net/http"
 	"net/url"
 	"os"
