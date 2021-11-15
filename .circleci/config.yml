@@ -32,7 +32,7 @@ jobs:
             DB_HOST: localhost
       - run:
           name: Run tests
-          command: go test ./... -v
+          command: go test -p 1 ./... -v
           environment:
             DB_USERNAME: circleci
             DB_HOST: localhost
