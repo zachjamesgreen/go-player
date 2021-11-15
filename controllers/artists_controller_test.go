@@ -3,12 +3,9 @@ package controllers
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/gorilla/mux"
 	. "github.com/stretchr/testify/assert"
 	"github.com/zachjamesgreen/go-player/database"
 	"github.com/zachjamesgreen/go-player/models"
-	"net/http"
-	"net/http/httptest"
 	"os"
 	"testing"
 	"gorm.io/gorm"
@@ -38,9 +35,7 @@ func TestGetArtists(t *testing.T) {
 		NoError(t, err)
 	}
 
-	req, _ := http.NewRequest("GET", "/artists", nil)
-	res := httptest.NewRecorder()
-	GetArtists(res, req)
+	res := SendRequest("/artists", "/artists", "GET", GetArtists)
 
 	var dest []interface{}
 	err := json.Unmarshal(res.Body.Bytes(), &dest)
@@ -60,11 +55,7 @@ func TestGetArtist(t *testing.T) {
 	NoError(t, err)
 
 	url := fmt.Sprintf("/artists/%d", artist.ID)
-	req, _ := http.NewRequest("GET", url, nil)
-	res := httptest.NewRecorder()
-	router := mux.NewRouter()
-	router.HandleFunc("/artists/{id}", GetArtist)
-	router.ServeHTTP(res, req)
+	res := SendRequest("/artists/{id}", url, "GET", GetArtist)
 
 	var dest models.Artist
 	err = json.Unmarshal(res.Body.Bytes(), &dest)
@@ -98,11 +89,7 @@ func TestGetArtistSongs(t *testing.T) {
 	}
 
 	url := fmt.Sprintf("/artists/%d/songs", artist.ID)
-	req, _ := http.NewRequest("GET", url, nil)
-	res := httptest.NewRecorder()
-	router := mux.NewRouter()
-	router.HandleFunc("/artists/{id}/songs", GetArtistSongs)
-	router.ServeHTTP(res, req)
+	res := SendRequest("/artists/{id}/songs", url, "GET", GetArtistSongs)
 
 	var dest []models.Song
 	err = json.Unmarshal(res.Body.Bytes(), &dest)
