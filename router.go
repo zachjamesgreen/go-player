@@ -1,7 +1,7 @@
 package main
 
 import (
-	. "github.com/zachjamesgreen/go-player/controllers"
+	"github.com/zachjamesgreen/go-player/controllers"
 
 	"github.com/gorilla/mux"
 )
@@ -10,26 +10,26 @@ func mount(r *mux.Router) {
 	// --------------
 	// Artists Routes
 	// --------------
-	r.HandleFunc("/artists", GetArtists)
-	r.HandleFunc("/artists/{id}", DeleteArtist).Methods("DELETE")
-	r.HandleFunc("/artists/{id}", GetArtist)
-	r.HandleFunc("/artists/{id}/songs", GetArtistSongs)
-	r.HandleFunc("/artists/{id}/albums", GetArtistAlbums)
+	r.HandleFunc("/artists", controllers.GetArtists)
+	r.HandleFunc("/artists/{id}", controllers.DeleteArtist).Methods("DELETE")
+	r.HandleFunc("/artists/{id}", controllers.GetArtist)
+	r.HandleFunc("/artists/{id}/songs", controllers.GetArtistSongs)
+	r.HandleFunc("/artists/{id}/albums", controllers.GetArtistAlbums)
 	// ------------
 	// Album Routes
 	// ------------
-	r.HandleFunc("/albums", GetAlbums)
-	r.HandleFunc("/albums/{id}", DeleteAlbum).Methods("DELETE")
-	r.HandleFunc("/albums/{id}", GetAlbum)
-	r.HandleFunc("/albums/{id}/songs", GetAlbumSongs)
+	r.HandleFunc("/albums", controllers.GetAlbums)
+	r.HandleFunc("/albums/{id}", controllers.DeleteAlbum).Methods("DELETE")
+	r.HandleFunc("/albums/{id}", controllers.GetAlbum)
+	r.HandleFunc("/albums/{id}/songs", controllers.GetAlbumSongs)
 	// -----------
 	// Song Routes
 	// -----------
-	r.HandleFunc("/songs", GetSongs)
-	r.HandleFunc("/songs/liked/{id}", LikeSong)
-	r.HandleFunc("/songs/liked", GetLikedSongs)
-	r.HandleFunc("/songs/liked/{id}/remove", UnlikeSong)
-	r.HandleFunc("/songs/{id}", DeleteSong).Methods("DELETE")
+	r.HandleFunc("/songs", controllers.GetSongs)
+	r.HandleFunc("/songs/liked/{id}", controllers.LikeSong)
+	r.HandleFunc("/songs/liked", controllers.GetLikedSongs)
+	r.HandleFunc("/songs/liked/{id}/remove", controllers.UnlikeSong)
+	r.HandleFunc("/songs/{id}", controllers.DeleteSong).Methods("DELETE")
 
 	// ------------
 	// Upload Route
@@ -39,8 +39,8 @@ func mount(r *mux.Router) {
 	// -----------
 	// User Routes
 	// -----------
-	r.HandleFunc("/users", CreateUser).Methods("POST")
-	r.HandleFunc("/users/{id}", GetUserById)
+	r.HandleFunc("/users", controllers.CreateUser).Methods("POST")
+	r.HandleFunc("/users/{id}", controllers.GetUserById)
 
 	//------------------
 	// Liked Songs Route
