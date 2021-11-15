@@ -33,17 +33,18 @@ func (s Song) String() string {
 	return fmt.Sprintf("Song<%+v %+v %+v %+v %+v %+v %+v %+v>\n", s.ID, s.Title, s.Track, s.Comment, s.AlbumId, s.ArtistId, s.Path, s.Genre)
 }
 
-func (song *Song) Upsert() {
-	err := db.DB.Where(song).FirstOrInit(&song).Error
+func (song *Song) Upsert() (err error){
+	err = db.DB.Where(song).FirstOrInit(&song).Error
 	if err != nil {
-		panic(err)
+		return
 	}
 	if song.ID == 0 {
 		err = db.DB.Create(&song).Error
 		if err != nil {
-			panic(err)
+			return
 		}
 	}
+	return
 }
 
 func (song *Song) Save() {
