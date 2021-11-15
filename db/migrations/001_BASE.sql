@@ -47,9 +47,9 @@ ALTER TABLE ONLY public.albums ADD CONSTRAINT albums_title_artist_id_key UNIQUE 
 ALTER TABLE ONLY public.artists ADD CONSTRAINT artists_name_key UNIQUE (name);
 ALTER TABLE ONLY public.songs ADD CONSTRAINT songs_title_artist_id_album_id_key UNIQUE (title, artist_id, album_id);
 ALTER TABLE ONLY public.users ADD CONSTRAINT users_username_key UNIQUE (username);
-ALTER TABLE ONLY public.albums ADD CONSTRAINT albums_artist_id_fkey FOREIGN KEY (artist_id) REFERENCES public.artists(id);
-ALTER TABLE ONLY public.songs ADD CONSTRAINT songs_album_id_fkey FOREIGN KEY (album_id) REFERENCES public.albums(id);
-ALTER TABLE ONLY public.songs ADD CONSTRAINT songs_artist_id_fkey FOREIGN KEY (artist_id) REFERENCES public.artists(id);
+ALTER TABLE ONLY public.albums ADD CONSTRAINT albums_artist_id_fkey FOREIGN KEY (artist_id) REFERENCES public.artists(id) ON DELETE CASCADE;
+ALTER TABLE ONLY public.songs ADD CONSTRAINT songs_album_id_fkey FOREIGN KEY (album_id) REFERENCES public.albums(id) ON DELETE CASCADE;
+ALTER TABLE ONLY public.songs ADD CONSTRAINT songs_artist_id_fkey FOREIGN KEY (artist_id) REFERENCES public.artists(id) ON DELETE CASCADE;
 -- +goose Down
 DROP TABLE public.songs;
 DROP TABLE public.albums;
