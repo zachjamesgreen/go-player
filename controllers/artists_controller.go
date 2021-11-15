@@ -67,6 +67,10 @@ func DeleteArtist(w http.ResponseWriter, req *http.Request) {
 	id, err := strconv.Atoi(vars["id"])
 	check(err)
 	artist, err := models.GetArtistById(id)
+	if artist.Name == "" {
+		http.Error(w, "Artist Not Found", http.StatusNotFound)
+		return
+	}
 	if err != nil {
 		json.NewEncoder(w).Encode(err)
 		return

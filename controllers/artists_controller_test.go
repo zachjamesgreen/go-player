@@ -1,7 +1,9 @@
 package controllers
 
 import (
+	"encoding/json"
 	"fmt"
+	"github.com/gorilla/mux"
 	. "github.com/stretchr/testify/assert"
 	"music/database"
 	"music/models"
@@ -9,8 +11,7 @@ import (
 	"net/http/httptest"
 	"os"
 	"testing"
-	"encoding/json"
-	"github.com/gorilla/mux"
+	"gorm.io/gorm"
 )
 
 func TestMain(m *testing.M) {
@@ -81,7 +82,7 @@ func TestGetArtistSongs(t *testing.T) {
 		Name: "Test1",
 	}
 	album := models.Album{
-		Title: "Test1",
+		Title:  "Test1",
 		Artist: &artist,
 	}
 	err := artist.FirstOrCreate()
@@ -90,7 +91,7 @@ func TestGetArtistSongs(t *testing.T) {
 	NoError(t, err)
 	var songs []models.Song
 	for i := 0; i < 3; i++ {
-		song := models.Song{ Title: fmt.Sprintf("Test%d", i), Album: &album, Artist: &artist }
+		song := models.Song{Title: fmt.Sprintf("Test%d", i), Album: &album, Artist: &artist}
 		err = song.Upsert()
 		NoError(t, err)
 		songs = append(songs, song)
@@ -124,18 +125,14 @@ func TestGetArtistAlbums(t *testing.T) {
 	NoError(t, err)
 	var albums []models.Album
 	for i := 0; i < 3; i++ {
-		album := models.Album{ Title: fmt.Sprintf("Test%d", i), Artist: &artist }
+		album := models.Album{Title: fmt.Sprintf("Test%d", i), Artist: &artist}
 		err = album.Upsert()
 		NoError(t, err)
 		albums = append(albums, album)
 	}
 
 	url := fmt.Sprintf("/artists/%d/albums", artist.ID)
-	req, _ := http.NewRequest("GET", url, nil)
-	res := httptest.NewRecorder()
-	router := mux.NewRouter()
-	router.HandleFunc("/artists/{id}/albums", GetArtistAlbums)
-	router.ServeHTTP(res, req)
+	res := SendRequest("/artists/{id}/albums", url, "GET", GetArtistAlbums)
 
 	var dest []models.Album
 	err = json.Unmarshal(res.Body.Bytes(), &dest)
@@ -149,7 +146,7 @@ func TestGetArtistAlbums(t *testing.T) {
 }
 
 func TestDeleteArtist(t *testing.T) {
-	database.GetTestDB(false)
+	db := database.GetTestDB(false)
 	defer database.CleanTestDB()
 	artist := models.Artist{
 		Name: "Test1",
@@ -158,11 +155,24 @@ func TestDeleteArtist(t *testing.T) {
 	NoError(t, err)
 
 	url := fmt.Sprintf("/artists/%d", artist.ID)
-	req, _ := http.NewRequest("DELETE", url, nil)
-	res := httptest.NewRecorder()
-	router := mux.NewRouter()
-	router.HandleFunc("/artists/{id}", GetArtistAlbums)
-	router.ServeHTTP(res, req)
+	res := SendRequest("/artists/{id}", url, "DELETE", DeleteArtist)
 
+
+	
 	Equal(t, 200, res.Code)
+	expected := models.Artist{}
+	result := db.First(&expected, artist.ID)
+	Equal(t, result.Error, gorm.ErrRecordNotFound)
+	
+	// TODO: test for 404 if artist does not exist
+}
+
+func TestDeleteArtistIfNotExists(t *testing.T) {
+	database.GetTestDB(false)
+	defer database.CleanTestDB()
+
+	url := fmt.Sprintf("/artists/%d", 1000)
+	res := SendRequest("/artists/{id}", url, "DELETE", DeleteArtist)
+
+	Equal(t, 404, res.Code)
 }
