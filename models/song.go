@@ -3,10 +3,9 @@ package models
 import (
 	"database/sql"
 	"fmt"
-	db "github.com/zachjamesgreen/go-player/database"
 	"time"
 
-	"gorm.io/gorm"
+	db "github.com/zachjamesgreen/go-player/database"
 )
 
 type Song struct {
@@ -30,84 +29,44 @@ type Song struct {
 }
 
 func (s Song) String() string {
-	return fmt.Sprintf("Song<%+v %+v %+v %+v %+v %+v %+v %+v>\n", s.ID, s.Title, s.Track, s.Comment, s.AlbumId, s.ArtistId, s.Path, s.Genre)
+	return fmt.Sprintf("Song<ID: %+v\n Title: %+v\n Track: %+v\n Comment: %+v\n AlbumId: %+v\n ArtistId: %+v\n Path: %+v\n Genre: %+v>\n", s.ID, s.Title, s.Track, s.Comment, s.AlbumId, s.ArtistId, s.Path, s.Genre)
 }
 
-func (song *Song) Upsert() (err error){
-	err = db.DB.Where(song).FirstOrInit(&song).Error
-	if err != nil {
-		return
-	}
-	if song.ID == 0 {
-		err = db.DB.Create(&song).Error
-		if err != nil {
-			return
-		}
-	}
+func (song *Song) Create() (err error) {
+	return db.DB.Create(&song).Error
+}
+
+func (song *Song) FirstOrCreate() (err error) {
+	return db.DB.Where(Song{Title: song.Title, ArtistId: song.Artist.ID, AlbumId: song.Album.ID}).FirstOrCreate(&song).Error
+}
+
+func (song *Song) Save() (err error) {
+	return db.DB.Save(song).Error
+}
+
+func (song Song) Delete() (err error) {
+	return db.DB.Delete(&song).Error
+}
+
+func GetSongs() (songs []Song, err error) {
+	err = db.DB.Preload("Artist").Preload("Album").Find(&songs).Error
 	return
 }
 
-func (song *Song) Save() {
-	err := db.DB.Save(song).Error
-	if err != nil {
-		if err == gorm.ErrRecordNotFound {
-			fmt.Println("ErrRecordNotFound")
-		} else {
-			panic(err)
-		}
-	}
-}
-
-func (song Song) Delete() {
-	err := db.DB.Delete(&song).Error
-	if err != nil {
-		panic(err)
-	}
-}
-
-func GetSongs() (songs []Song) {
-	err := db.DB.Preload("Artist").Preload("Album").Find(&songs).Error
-	if err != nil {
-		if err == gorm.ErrRecordNotFound {
-			fmt.Println("ErrRecordNotFound")
-		} else {
-			panic(err)
-		}
-	}
+func GetSong(id int) (song Song, err error) {
+	err = db.DB.First(&song, id).Error
 	return
 }
 
-func GetSong(id int) (song Song) {
-	err := db.DB.First(&song, id).Error
-	if err != nil {
-		if err == gorm.ErrRecordNotFound {
-			fmt.Println("ErrRecordNotFound")
-		} else {
-			panic(err)
-		}
-	}
+func GetLikedSongs() (songs []Song, err error) {
+	err = db.DB.Where("liked = ?", true).Find(&songs).Error
 	return
 }
 
-func GetLikedSongs() (songs []Song) {
-	err := db.DB.Where("liked = ?", true).Find(&songs).Error
-	if err != nil {
-		if err == gorm.ErrRecordNotFound {
-			fmt.Println("ErrRecordNotFound")
-		} else {
-			panic(err)
-		}
-	}
-	return
+func (song *Song) AddLike() (err error) {
+	return db.DB.First(&song).Update("liked", true).Error
 }
 
-func AddLike(id int) (err error) {
-	err = db.DB.Model(&Song{}).Where("id = ?", id).Update("liked", true).Error
-	return
-}
-
-func RemoveLike(id int) (err error) {
-	err = db.DB.Model(&Song{}).Where("id = ?", id).Update("liked", false).Error
-	return
-
+func (song *Song) RemoveLike() (err error) {
+	return db.DB.First(&song).Update("liked", false).Error
 }

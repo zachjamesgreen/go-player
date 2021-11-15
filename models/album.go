@@ -18,7 +18,7 @@ type Album struct {
 	SpotifyLink string
 	Images      datatypes.JSON
 	Artist      *Artist
-	Songs       []Song
+	Songs       []Song // on delete cascade
 }
 
 func (a Album) String() string {
@@ -27,30 +27,12 @@ func (a Album) String() string {
 		a.ID, a.Title, a.ArtistId, a.SpotifyId, a.SpotifyLink, a.Images)
 }
 
-func (album *Album) Upsert() (err error) {
-	err = db.DB.Where(Album{Title: album.Title}).FirstOrInit(&album).Error
-	if err != nil {
-		return err
-	}
-	if album.ID == 0 {
-		err = db.DB.Create(&album).Error
-		if err != nil {
-			return err
-		}
-	}
-	return nil
+func (album *Album) FirstOrCreate() (err error) {
+	return db.DB.Where(Album{Title: album.Title, ArtistId: album.Artist.ID}).FirstOrCreate(&album).Error
 }
 
 func (album *Album) Save() (err error) {
-	err = db.DB.Save(&album).Error
-	if err != nil {
-		if err == gorm.ErrRecordNotFound {
-			fmt.Println("ErrRecordNotFound")
-		} else {
-			return
-		}
-	}
-	return
+	return db.DB.Save(&album).Error
 }
 
 func GetAlbums() (albums []Album) {
@@ -78,21 +60,14 @@ func GetAlbum(id int) (album Album) {
 	return
 }
 
-func GetAlbumSongs(album_id int) (songs []Song) {
-	err := db.DB.Where("album_id = ?", album_id).Preload("Album").Preload("Artist").Order("track asc").Find(&songs).Error
+func GetAlbumSongs(album_id int) (songs []Song, err error) {
+	err = db.DB.Where("album_id = ?", album_id).Preload("Album").Preload("Artist").Order("track asc").Find(&songs).Error
 	if err != nil {
-		if err == gorm.ErrRecordNotFound {
-			fmt.Println("ErrRecordNotFound")
-		} else {
-			panic(err)
-		}
+		return nil, err
 	}
-	return
+	return songs, nil
 }
 
-func (album Album) Delete() {
-	err := db.DB.Select("Songs").Delete(&album).Error
-	if err != nil {
-		panic(err)
-	}
+func (album Album) Delete() (err error){
+	return db.DB.Delete(&album).Error
 }

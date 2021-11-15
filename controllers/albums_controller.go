@@ -27,7 +27,12 @@ func GetAlbumSongs(w http.ResponseWriter, req *http.Request) {
 	vars := mux.Vars(req)
 	id, err := strconv.Atoi(vars["id"])
 	check(err)
-	json.NewEncoder(w).Encode(models.GetAlbumSongs(id))
+	albums, err := models.GetAlbumSongs(id)
+	if err != nil {
+		json.NewEncoder(w).Encode(err)
+		return
+	}
+	json.NewEncoder(w).Encode(albums)
 }
 
 func DeleteAlbum(w http.ResponseWriter, req *http.Request) {

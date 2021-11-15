@@ -82,7 +82,7 @@ func upload(fileHeader *multipart.FileHeader) {
 	if err != nil {
 		fmt.Println(err)
 	} else {
-		song.Upsert()
+		song.FirstOrCreate()
 	}
 }
 
@@ -223,7 +223,7 @@ func getTagData(file multipart.File) (artist models.Artist, album models.Album, 
 	}
 
 	album = models.Album{Title: data.Album(), Artist: &artist}
-	album.Upsert()
+	album.FirstOrCreate()
 	if album.SpotifyId == "" {
 		getSpotifyAlbumArt(&album, artist)
 		if err != nil {

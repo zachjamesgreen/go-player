@@ -24,7 +24,7 @@ func TestFirstOrCreateError(t *testing.T) {
 	Error(t, err)
 }
 
-func TestFirstOrCreate(t *testing.T) {
+func TestFirstOrCreateArtist(t *testing.T) {
 	db := database.GetTestDB(false)
 	defer database.CleanTestDB()
 	var artist Artist
@@ -69,23 +69,47 @@ func TestSave(t *testing.T) {
 	Error(t, err)
 }
 
-func TestDelete(t *testing.T) {
+func TestDeleteArtist(t *testing.T) {
+	db := database.GetTestDB(false)
+	defer database.CleanTestDB()
 	artist := Artist{
 		Name: "Test",
+	}
+	album := Album{
+		Title: "Test",
+		Artist: &artist,
+	}
+	song := Song{
+		Title: "Test",
+		Album: &album,
+		Artist: &artist,
 	}
 	database.GetTestDB(false)
 	defer database.CleanTestDB()
 
 	err := artist.FirstOrCreate()
 	NoError(t, err)
-
+	err = album.FirstOrCreate()
+	NoError(t, err)
+	err = song.FirstOrCreate()
+	NoError(t, err)
+	
 	err = artist.Delete()
 	NoError(t, err)
-
-	artist, err = GetArtistById(artist.ID)
+	
+	var expectedArtist Artist
+	var expectedAlbum Album
+	var expectedSong Song
+	err = db.Find(&expectedArtist, artist.ID).Error
 	NoError(t, err)
-	Equal(t, "", artist.Name)
-	// test with albums and songs
+	err = db.Find(&expectedAlbum, album.ID).Error
+	NoError(t, err)
+	err = db.Find(&expectedSong, song.ID).Error
+	NoError(t, err)
+
+	Equal(t, Artist{}, expectedArtist)
+	Equal(t, Album{}, expectedAlbum)
+	Equal(t, Song{}, expectedSong)
 }
 
 func TestGetAllArtists(t *testing.T) {
@@ -155,7 +179,7 @@ func TestGetArtistAlbumsById(t *testing.T) {
 	NoError(t, err)
 
 	for _, album := range albums {
-		album.Upsert()
+		album.FirstOrCreate()
 		NoError(t, err)
 	}
 
@@ -196,9 +220,9 @@ func TestGetArtistSongsById(t *testing.T) {
 
 	err := artist.FirstOrCreate()
 	NoError(t, err)
-	err = album.Upsert()
+	err = album.FirstOrCreate()
 	for _, song := range songs {
-		song.Upsert()
+		song.FirstOrCreate()
 		NoError(t, err)
 	}
 

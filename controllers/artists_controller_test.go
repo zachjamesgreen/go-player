@@ -78,12 +78,12 @@ func TestGetArtistSongs(t *testing.T) {
 	}
 	err := artist.FirstOrCreate()
 	NoError(t, err)
-	err = album.Upsert()
+	err = album.FirstOrCreate()
 	NoError(t, err)
 	var songs []models.Song
 	for i := 0; i < 3; i++ {
 		song := models.Song{Title: fmt.Sprintf("Test%d", i), Album: &album, Artist: &artist}
-		err = song.Upsert()
+		err = song.FirstOrCreate()
 		NoError(t, err)
 		songs = append(songs, song)
 	}
@@ -113,7 +113,7 @@ func TestGetArtistAlbums(t *testing.T) {
 	var albums []models.Album
 	for i := 0; i < 3; i++ {
 		album := models.Album{Title: fmt.Sprintf("Test%d", i), Artist: &artist}
-		err = album.Upsert()
+		err = album.FirstOrCreate()
 		NoError(t, err)
 		albums = append(albums, album)
 	}
